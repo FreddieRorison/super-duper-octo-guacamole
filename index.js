@@ -1,23 +1,54 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const config = require("./config.json");
+var mysql = require('mysql');
 
-const port = 80;
+// Port application will listen on
+const port = config.port;
+var connection = mysql.createConnection({host:config.mysql.hostname,user:config.mysql.username,password:config.mysql.password,database:config.mysql.database});
+//Other stuff
+app.set('view engine', 'pug');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.set('view engine', 'pug')
-
+// GET REQUESTS
+// To be changed
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + "/html/index.html")
-})
+  res.sendFile(__dirname + "/html/index.html");
+});
 app.get('/login', (req, res) => {
-    res.render(__dirname + "/src/templates/login.pug")
-})
+    res.render(__dirname + "/src/templates/login.pug");
+});
 app.get('/register', (req, res) => {
-    res.render(__dirname + "/src/templates/register.pug")
-})
+    res.render(__dirname + "/src/templates/register.pug");
+});
 app.get('/images/logo.png', (req, res) => {
-    res.sendFile(__dirname + "/src/images/logo.png")
-})
+    res.sendFile(__dirname + "/src/images/logo.png");
+});
 
+// POST REQUESTS
+
+//Allows the user to register an account
+app.post('/register', (req, res) => {
+    const body = req.body;
+    var email = body.email;
+    var password = body.password;
+    var date = body.date;
+
+    connection.connect();
+
+    connection.query(`INSERT INTO users (Email, Password, DateOfBirth) VALUES ('${email}', '${password}', '${date}');`);
+
+    connection.end();
+});
+
+app.post('/login', (req, res) => {
+    const body = req.body;
+    console.log(body);
+});
+
+// Allow the application to listen on selected port
 app.listen(port, function() {
     console.log(`Now listening on port ${port}`);
 });
