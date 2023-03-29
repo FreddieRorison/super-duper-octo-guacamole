@@ -1,0 +1,9 @@
+{
+    "port":"8080",
+    "mysql": {
+        "hostname":"localhost",
+        "username":"admin",
+        "password":"password",
+        "database":"healthapp"
+    }
+}
