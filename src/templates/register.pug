@@ -1,0 +1,23 @@
+doctype html
+head
+  title Register | Medical App
+  style
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='images/logo.png')
+#loginBox
+  h1 Register
+  h2
+    | Already have an account? 
+    a(href='login') Login
+  form
+    p Email
+    input(type='text' placeholder='Email')
+    p Password
+    input(type='password' placeholder='Password')
+    p Confirm Password
+    input(type='password' placeholder='Confirm Password')
+    p Date of Birth
+    input(type='date')
+    button(type='submit') Submit

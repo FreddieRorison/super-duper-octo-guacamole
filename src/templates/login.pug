@@ -1,0 +1,19 @@
+doctype html
+head
+  title Login | Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='images/logo.png')
+#loginBox
+  h1 Login
+  h2
+    | Don&apos;t have an account? 
+    a(href='register') Register
+  form
+    p Email
+    input(type='text' placeholder='Email')
+    p Password
+    input(type='password' placeholder='Password')
+    button(type='submit') Submit
