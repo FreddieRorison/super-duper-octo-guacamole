@@ -11,9 +11,6 @@ CREATE TABLE Users (
     Email varchar(255) NOT NULL,
     Password varchar(255) NOT NULL,
     DateOfBirth DATE NOT NULL,
-    Height INT,
-    Weight DOUBLE,
-    Gender varchar(255),
     Admin Boolean DEFAULT false,
     PRIMARY KEY (UserID)
 );
