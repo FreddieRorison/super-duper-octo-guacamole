@@ -3,24 +3,88 @@ body {
     background-color: #252422;
     font-family: 'Open Sans', sans-serif;
 }
+
 .topbar {
     height: 4rem;
     width: 100%;
     padding: 10;
-    background-color: #403d39;
+    background-color: lightskyblue;
     box-shadow: 1rem 0rem 2rem;
 }
+
 .topbar #logo {
-    margin: 0.5rem 0 0 1rem;
+    /*margin: 0.5rem 0 0 1rem;*/
+    float: right;
     height: 3rem;
     width: 3rem;
+    padding-right: 50px;
+    padding-top: 8px;
 }
-.sidebar {
+
+.topbar h1 {
+    display: inline;
+    padding-left: 500px;
+}
+
+/*.sidebar {
     background-color: #403d39;
     height: 100%;
     width: 15rem;
     position: fixed;
+}*/
+
+/* The sidebar menu */
+.sidenav {
+    height: 100%;
+    /* Full-height: remove this if you want "auto" height */
+    width: 150px;
+    /* Set the width of the sidebar */
+    position: fixed;
+    /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1;
+    /* Stay on top */
+    top: 0;
+    /* Stay at the top */
+    left: 0;
+    background-color: lightskyblue;
+    /* Black */
+    overflow-x: hidden;
+    /* Disable horizontal scroll */
+    padding-top: 100px;
 }
+
+/* The navigation menu links */
+.sidenav a {
+    padding: 50px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+/* Style page content */
+.main {
+    margin-left: 160px;
+    /* Same as the width of the sidebar */
+    padding: 0px 10px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
 #loginBox {
     padding: 0.5rem 1rem 2rem 1rem;
     margin: 3rem auto auto auto;
@@ -29,6 +93,7 @@ body {
     width: 50rem;
     box-shadow: 0.75rem 0.75rem 2rem;
 }
+
 #loginBox h1 {
     text-align: center;
     color: #ffffff;
@@ -36,6 +101,7 @@ body {
     margin-bottom: 0;
     font-weight: bold;
 }
+
 #loginBox h2 {
     font-size: 1.25rem;
     text-align: center;
@@ -43,10 +109,12 @@ body {
     margin-top: 0;
     font-weight: lighter;
 }
+
 #loginBox a {
     text-decoration: underline;
     color: #ffffff;
 }
+
 #loginBox input {
     margin: 1rem auto 2rem auto;
     width: 46rem;
@@ -59,10 +127,12 @@ body {
     opacity: 75%;
     font-size: 1.5rem;
 }
+
 #loginBox input::placeholder {
     color: #ffffff;
     opacity: 80%;
 }
+
 #loginBox button {
     display: block;
     width: 8rem;
@@ -74,9 +144,11 @@ body {
     background-color: #008000;
     border-width: 0;
 }
+
 #loginBox button:active {
     background-color: #016601;
 }
+
 #loginBox p {
     color: white;
     font-size: 1.25rem;
