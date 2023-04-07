@@ -10,6 +10,7 @@ body {
     padding: 10;
     background-color: lightskyblue;
     box-shadow: 1rem 0rem 2rem;
+    position: fixed;
 }
 
 .topbar #logo {
@@ -83,6 +84,64 @@ body {
     .sidenav a {
         font-size: 18px;
     }
+}
+
+.button {
+    border: none;
+    color: white;
+    /*padding: 100px 50px; */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button #button1 {
+    display: inline-block;
+    padding-top: 50px;
+    padding-left: 50px;
+}
+
+.button #button2 {
+    display: inline-block;
+    padding-left: 20px;
+}
+
+.button #button3 {
+    padding-top: 20px;
+    padding-right: 125px;
+}
+
+.button #add {
+    width: 150px;
+    height: 35px;
+}
+
+.button #edit {
+    width: 150px;
+    height: 35px;
+}
+
+.button #remove {
+    width: 150px;
+    height: 35px;
+}
+
+#graph {
+    padding-left: 50px;
+    padding-top: 20px;
+}
+
+#record {
+    padding-left: 160px;
+    color: white;
+}
+
+.column {
+    float: left;
+    width: 50%;
+    padding-top: 4rem;
 }
 
 #loginBox {
