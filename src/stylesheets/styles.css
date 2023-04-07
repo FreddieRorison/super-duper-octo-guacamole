@@ -135,7 +135,7 @@ body {
 
 #record {
     padding-left: 160px;
-    color: white;
+    color: black;
 }
 
 .column {
@@ -176,10 +176,6 @@ select {
     width: 500px;
     padding: 12px 20px;
     border: 2px solid lightblue;
-}
-
-label {
-    margin-top: 10px;
 }
 
 #loginBox {
