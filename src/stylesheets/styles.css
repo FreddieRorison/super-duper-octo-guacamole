@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: #252422;
+    background-color: white;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -9,7 +9,7 @@ body {
     width: 100%;
     padding: 10;
     background-color: lightskyblue;
-    box-shadow: 1rem 0rem 2rem;
+    /*box-shadow: 1rem 0rem 2rem; */
     position: fixed;
 }
 
@@ -142,6 +142,44 @@ body {
     float: left;
     width: 50%;
     padding-top: 4rem;
+}
+
+form {
+    padding-left: 450px;
+    padding-top: 100px;
+}
+
+input[type=submit] {
+    background-color: lightblue;
+    border: 1px solid black;
+    color: black;
+    padding: 10px 50px;
+    cursor: pointer;
+    margin: 20px 356px;
+}
+
+input[type=text] {
+    width: 456px;
+    padding: 12px 20px;
+    border: 2px solid lightblue;
+}
+
+textarea {
+    height: 150px;
+    width: 456px;
+    border: 2px solid lightblue;
+    padding: 12px 20px;
+    resize: none;
+}
+
+select {
+    width: 500px;
+    padding: 12px 20px;
+    border: 2px solid lightblue;
+}
+
+label {
+    margin-top: 10px;
 }
 
 #loginBox {
