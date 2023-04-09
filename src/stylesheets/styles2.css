@@ -7,8 +7,40 @@ body {
 .topbar {
     height: 5em;
     width: 100%;
+    margin: 0;
     background-color: #00a9ce;
 }
+
+/* Sidebar CSS */
+
+.sidebar {
+    margin: 0;
+    width: 15%;
+    height: 100%;
+    background-color: #ace3ef;
+    position: fixed;
+}
+.sidebar ul {
+    list-style-type: none;
+    margin: 2em 0 0 0;
+    padding: 0;
+}
+.sidebar li {
+    padding: 4em 0 6em 0;
+    text-align: center;
+    width: 100%;
+    display: block;
+    
+}
+.sidebar li a {
+    font-size: 2em;
+    text-decoration: none;
+    color: #000000;
+}
+.sidebar li a:hover {
+    color: #212121;
+}
+
 .topbar img {
     float: right;
     height: 4em;
@@ -62,4 +94,15 @@ body {
     background-color: darkgray;
 }
 
-/* Next */
+/* Homepage CSS */
+#homepage {
+    width: 85%;
+    float: right;
+}
+#homepage h1 {
+    margin: 2% 0 0 2%;
+    font-size: 2.5em;
+}
+#medicationNotification {
+    margin: 2% 0 0 2%;
+}
