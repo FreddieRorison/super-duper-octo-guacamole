@@ -2,7 +2,11 @@ body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
 }
-
+/* Content Container CSS */
+.contentContainer {
+    width: 85%;
+    float: right;
+}
 /* Topbar CSS */
 .topbar {
     height: 5em;
@@ -95,10 +99,6 @@ body {
 }
 
 /* Homepage CSS */
-#homepage {
-    width: 85%;
-    float: right;
-}
 #homepage h1 {
     margin: 2% 0 0 2%;
     font-size: 2.5em;
