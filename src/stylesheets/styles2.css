@@ -129,3 +129,43 @@ body {
     text-decoration: none;
     color: #000000;
 }
+
+/* Health Activity CSS */
+#HealthActivity h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin: 0;
+    padding: 1em 0 0 0;
+}
+#HealthActivity #graphContainer {
+    background-color: gray;
+    width: 25%;
+    height: 18rem;
+    float: right;
+    margin: 4rem 8rem 0 0;
+}
+#HealthActivity table {
+    margin: 4rem 0 0 6rem;
+    border-collapse: collapse;
+}
+#HealthActivity td {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border: 0.1em solid black
+}
+#HealthActivity form {
+    margin: 1rem 0 0 6rem;
+}
+#HealthActivity button {
+    border-radius: 0;
+    border-width: 0;
+    background-color: gray;
+    width: 4rem;
+    height: 2.5rem;
+}
+#HealthActivity button:active {
+    border-radius: 0;
+    border-width: 0;
+    background-color: darkgray;
+    width: 4rem;
+    height: 2.5rem;
+}
