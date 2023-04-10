@@ -2,28 +2,31 @@ body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
 }
+
 /* Content Container CSS */
 .contentContainer {
-    width: 85%;
-    background-color: gray;
+    width: 90%;
     margin: 0 0 0 auto;
 }
+
 /* Topbar CSS */
 .topbar {
     height: 8vh;
     width: 100%;
     margin: 0;
+    position: sticky;
+    top: 0;
     background-color: #00a9ce;
 }
 
 /* Sidebar CSS */
-
 .sidebar {
     margin: 0;
-    width: 15%;
+    width: 10%;
     height: 100%;
     background-color: #ace3ef;
     float: left;
+    position: fixed;
 }
 .sidebar ul {
     list-style-type: none;
@@ -31,14 +34,14 @@ body {
     padding: 0;
 }
 .sidebar li {
-    padding: 4em 0 6em 0;
+    padding: 4em 0 4em 0;
     text-align: center;
     width: 100%;
     display: block;
     
 }
 .sidebar li a {
-    font-size: 2em;
+    font-size: 1.5em;
     text-decoration: none;
     color: #000000;
 }
@@ -83,9 +86,6 @@ body {
     padding: 0.2em;
     border-width: 0;
 }
-#loginBox [type=date] {
-    opacity: 75%;
-}
 #loginBox button {
     margin: 1.5em 0 0 0;
     width: 30%;
@@ -107,8 +107,8 @@ body {
 #medicationNotification {
     margin: 2% 0 0 2%;
 }
-/* HealthActivitiesMenu CSS */
 
+/* HealthActivitiesMenu CSS */
 #HealthActivitiesMenu h1 {
     text-align: center;
     font-size: 2.5em;
@@ -117,9 +117,8 @@ body {
 }
 .HealthActivitiesMenuOption {
     display: inline-block;
-    display: block;
     background-color: #5ce0c8;
-    margin: 4rem;
+    margin: 4rem 2rem 0rem 4rem;
     width: 10%;
     padding: 6rem 4rem 6rem 4rem;
     text-align: center;

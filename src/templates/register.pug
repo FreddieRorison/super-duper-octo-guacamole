@@ -2,7 +2,7 @@ doctype html
 head
   title Register | Medical App
   style
-    include ../stylesheets/styles.css
+    include ../stylesheets/styles2.css
   meta(charset='utf-8')
 .topbar
   img#logo(src='images/logo.png')
@@ -12,12 +12,12 @@ head
     | Already have an account? 
     a(href='login') Login
   form(method='post' action='register')
-    p Email
-    input(type='text' placeholder='Email' name='email')
-    p Password
-    input(type='password' placeholder='Password' name='password')
-    p Confirm Password
-    input(type='password' placeholder='Confirm Password')
+    input(type='text' placeholder='Firstname' name='firstname')
+    input(type='text' placeholder='Surname' name='surname')
     p Date of Birth
     input(type='date' name='date')
+    input(type='text' placeholder='Email' name='email')
+    input(type='password' placeholder='Password' name='password')
+    input(type='password' placeholder='Confirm Password')
+    
     button(type='submit' value='Submit') Submit

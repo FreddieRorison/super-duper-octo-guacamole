@@ -32,15 +32,19 @@ app.get('/images/logo.png', (req, res) => {
 //Allows the user to register an account
 app.post('/register', (req, res) => {
     const body = req.body;
+    var firstname = body.firstname;
+    var surname = body.surname;
     var email = body.email;
     var password = body.password;
     var date = body.date;
 
     connection.connect();
 
-    connection.query(`INSERT INTO users (Email, Password, DateOfBirth) VALUES ('${email}', '${password}', '${date}');`);
+    connection.query(`INSERT INTO users (Firstname, Surname, Email, Password, DateOfBirth) VALUES ('${firstname}','${surname}','${email}', '${password}', '${date}');`);
 
     connection.end();
+
+    res.redirect(200, '/login');
 });
 
 app.post('/login', (req, res) => {
