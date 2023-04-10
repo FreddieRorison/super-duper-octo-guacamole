@@ -8,6 +8,15 @@ body {
     width: 90%;
     margin: 0 0 0 auto;
 }
+.contentContainer h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin: 0;
+    padding: 1em 0 0 0;
+}
+.contentContainer h2 {
+    text-align: center;
+}
 
 /* Topbar CSS */
 .topbar {
@@ -109,12 +118,6 @@ body {
 }
 
 /* HealthActivitiesMenu CSS */
-#HealthActivitiesMenu h1 {
-    text-align: center;
-    font-size: 2.5em;
-    margin: 0;
-    padding: 1em 0 0 0;
-}
 .HealthActivitiesMenuOption {
     display: inline-block;
     background-color: #5ce0c8;
@@ -131,12 +134,6 @@ body {
 }
 
 /* Health Activity CSS */
-#HealthActivity h1 {
-    text-align: center;
-    font-size: 2.5em;
-    margin: 0;
-    padding: 1em 0 0 0;
-}
 #HealthActivity #graphContainer {
     background-color: gray;
     width: 25%;
@@ -169,3 +166,39 @@ body {
     width: 4rem;
     height: 2.5rem;
 }
+
+/* Activity Add CSS */
+
+#activityAdd form {
+    width: 40%;
+    display: block;
+    margin: 6rem auto 0 auto;
+}
+#activityAdd input {
+    width: 100%;
+    display: block;
+    margin: 0 auto 2rem auto;
+    font-size: 1.5rem;
+    border-radius: 0;
+    border-width: 0;
+    background-color: darkgray;
+    padding: 1rem;
+}
+#activityAdd button {
+    width: 20%;
+    display: block;
+    font-size: 1.5rem;
+    margin: auto;
+    background-color: gray;
+    border-radius: 0;
+    border-width: 0;
+    padding: 0.5rem 0 0.5rem 0;
+}
+#activityAdd button:active {
+    width: 20%;
+    display: block;
+    font-size: 1.5rem;
+    margin: auto;
+    background-color: darkgray;
+}
+

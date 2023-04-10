@@ -29,7 +29,6 @@ CREATE TABLE HealthActivity (
     ActivityID INT NOT NULL AUTO_INCREMENT,
     UserID INT,
     SectionID INT,
-    RecordID INT,
     date DATETIME,
     PRIMARY KEY (ActivityID),
     FOREIGN KEY (SectionID) REFERENCES HealthSection(SectionID),
