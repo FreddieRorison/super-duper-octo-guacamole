@@ -1,23 +1,22 @@
 doctype html
 head
-  title Register | Medical App
-  style
+  title Medical App
+  style 
     include ../stylesheets/styles2.css
   meta(charset='utf-8')
 .topbar
-  img#logo(src='images/logo.png')
+  img#logo(src='../images/patientMonitoringlogo.jpg')
 #loginBox
   h1 Register
   h2
     | Already have an account? 
     a(href='login') Login
-  form(method='post' action='register')
+  form(action='/register' method='POST')
     input(type='text' placeholder='Firstname' name='firstname')
     input(type='text' placeholder='Surname' name='surname')
-    p Date of Birth
+    p Date Of Birth
     input(type='date' name='date')
     input(type='text' placeholder='Email' name='email')
     input(type='password' placeholder='Password' name='password')
     input(type='password' placeholder='Confirm Password')
-    
-    button(type='submit' value='Submit') Submit
+    button(type='submit') Submit

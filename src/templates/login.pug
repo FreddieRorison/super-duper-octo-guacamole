@@ -1,19 +1,17 @@
 doctype html
 head
-  title Login | Medical App
+  title Medical App
   style 
     include ../stylesheets/styles2.css
   meta(charset='utf-8')
 .topbar
-  img#logo(src='images/logo.png')
+  img#logo(src='../images/patientMonitoringlogo.jpg')
 #loginBox
   h1 Login
   h2
-    | Don&apos;t have an account? 
+    | Don&apos;t have an account?
     a(href='register') Register
-  form(method='post' action='/login')
-    p Email
-    input#email(type='text' placeholder='Email' name='email')
-    p Password
-    input#password(type='password' placeholder='Password' name='password')
-    button(type='submit' value='Submit') Submit
+  form(action='/login' method='POST')
+    input(type='text' placeholder='Email' name='email')
+    input(type='password' placeholder='Password' name='password')
+    button(type='submit') Submit
