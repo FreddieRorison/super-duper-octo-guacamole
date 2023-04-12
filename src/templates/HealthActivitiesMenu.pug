@@ -1,0 +1,23 @@
+doctype html
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles2.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='../images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='home.html') Home
+    li
+      a(href='HealthActivitiesMenu.html') Health Activities
+    li
+      a(href='') Exercise Tracker
+    li
+      a(href='') Medication Tracker
+#HealthActivitiesMenu.contentContainer
+  h1 Activity Tracker
+  each result in results
+    .HealthActivitiesMenuOption
+        a(href='/HealthActivity/?id=' + result.SectionID) #{result.Name}

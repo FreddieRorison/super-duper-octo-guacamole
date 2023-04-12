@@ -12,6 +12,8 @@ head
     | Don&apos;t have an account?
     a(href='register') Register
   form(action='/login' method='POST')
-    input(type='text' placeholder='Email' name='email')
-    input(type='password' placeholder='Password' name='password')
+    input(type='text' placeholder='Email' name='email' value='test@test.com')
+    input(type='password' placeholder='Password' name='password' value='farting')
     button(type='submit') Submit
+script(type='text/javascript').
+  #{javascript}

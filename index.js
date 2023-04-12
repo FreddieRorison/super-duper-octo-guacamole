@@ -1,9 +1,16 @@
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
 const config = require("./config.json");
 const pug = require('pug');
 var mysql = require('mysql');
+
+app.use(session({
+    secret: 'test',
+    cookie: {maxAge: 365*24*60*60*1000},
+    saveUninitialized: false
+}));
 
 // Port application will listen on
 const port = config.port;
@@ -17,21 +24,37 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // GET REQUESTS
 // To be changed
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + "/src/templates/home.pug");
+    if (checkAuthenticated(req,res)) {res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {firstname: req.session.Firstname}))}
 });
 app.get('/login', (req, res) => {
+    if (req.session.Authenticated) {res.redirect('/');return;};
     res.send(pug.renderFile(__dirname + "/src/templates/login.pug"));
   });
 app.get('/register', (req, res) => {
+    if (req.session.Authenticated) {res.redirect('/');return;};
     res.render(__dirname + "/src/templates/register.pug");
 });
-app.get('/home', (req, res) => {
+app.get('/HealthActivitiesMenu', (req, res) => {
+    if (!req.session.Authenticated) {res.redirect('/login');return;};
+
+    connection.query('SELECT SectionID, Name FROM healthsection;', function (err, results, fields) {
+        if (err) throw err;
+        res.send(pug.renderFile(__dirname + "/src/templates/HealthActivitiesMenu.pug", {results}))
+    });
+})
+app.get('/HealthActivity', (req, res) => {
+    if (!req.session.Authenticated) {res.redirect('/login');return;};
     
-});
+})
 
 // POST REQUESTS
 //Allows the user to register an account
 app.post('/register', (req, res) => {
+    if (req.session.Authenticated) {
+        res.redirect('/');
+        return;
+    }
+
     const body = req.body;
     var firstname = body.firstname;
     var surname = body.surname;
@@ -40,16 +63,39 @@ app.post('/register', (req, res) => {
     var date = body.date;
 
     connection.query(`INSERT INTO users (Firstname, Surname, Email, Password, DateOfBirth) VALUES ('${firstname}','${surname}','${email}', '${password}', '${date}');`);
-    res.send("fart");
+    res.redirect('/login');
 });
 
 app.post('/login', (req, res) => {
+    if (req.session.Authenticated) {
+        res.redirect('/');
+        return;
+    }
+
     const body = req.body;
     var email = body.email;
     var password = body.password;
 
-    connection.query(`SELECT `)
+    connection.query('SELECT UserID, Firstname FROM users WHERE Email= ?  AND Password= ? ;', [email, password], function (err, result, fields) {
+        if (err) throw err;
+        if (result.length > 0) {
+            req.session.Authenticated = true;
+            req.session.UserID = result[0].UserID;
+            req.session.Firstname = result[0].Firstname;
+            res.redirect('/')
+        } else {
+            res.send(pug.renderFile(__dirname + "/src/templates/login.pug", {javascript: "alert('Email/Password incorrect')"}));
+        }
+    });
 });
+
+function checkAuthenticated(req, res) {
+    if (!req.session.Authenticated) {
+        res.redirect('/login');
+    } else {
+        return true;
+    }
+}
 
 // Allow the application to listen on selected port
 app.listen(port, function() {
