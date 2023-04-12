@@ -44,7 +44,11 @@ app.get('/HealthActivitiesMenu', (req, res) => {
 })
 app.get('/HealthActivity', (req, res) => {
     if (!req.session.Authenticated) {res.redirect('/login');return;};
-    
+    const activityId = req.query.id;
+    var sql = "SELECT * FROM ";
+    connection.query('SELECT * FROM healthsection WHERE SectionID = ? ;', [activityId], function (err, result, fields) {
+        
+    });
 })
 
 // POST REQUESTS
