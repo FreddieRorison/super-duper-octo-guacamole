@@ -1,9 +1,8 @@
 doctype html
-| PASTE YOUR HTML CODE HERE
 head
   title Medical App
   style 
-    include ../stylesheets/styles2.css'
+    include ../stylesheets/styles2.css
   meta(charset='utf-8')
 .topbar
   img#logo(src='../images/patientMonitoringlogo.jpg')
@@ -18,21 +17,16 @@ head
     li
       a(href='') Medication Tracker
 #HealthActivity.contentContainer
-  h1 ACTIVITY NAME
+  h1 #{name}
   #graphContainer
   table
     tr
-      td ID
-      td PulseRate
-      td Body Temp
-      td Blood Pressure
-      td Resperation Rate
-    tr
-      td 1
-      td 80
-      td 39
-      td 120/80
-      td 10
+    each field in fields
+      td #{field.name}
+    each result in results
+      tr
+        each line in result
+          td #{line}
   form
     button Add
     button Remove
