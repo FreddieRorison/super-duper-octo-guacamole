@@ -70,7 +70,7 @@ app.get('/HealthActivity', (req, res) => {
         var name = result[0].Name;
         sql = `SELECT ${string1} FROM ${string2} WHERE SectionID = ${activityId};`;
         connection.query(sql, function(err, results, fields) {
-            res.send(pug.renderFile(__dirname + "/src/templates/HealthActivity.pug", {fields,results, name}))
+            res.send(pug.renderFile(__dirname + "/src/templates/HealthActivity.pug", {fields,results, name, activityId}))
         });
     });;
 })
@@ -116,6 +116,15 @@ app.post('/login', (req, res) => {
         }
     });
 });
+app.post('/RemoveActivity', (req, res) => {
+    var SectionID = req.body.SectionID;
+    var ActivityID = req.body.ActivityID;
+    
+    connection.query('DELETE FROM healthactivity WHERE ActivityID = ? AND UserID = ? AND SectionID = ?', [ActivityID, req.session.UserID, SectionID], function(err, result) {
+        if (err) {throw err;}
+        res.redirect('/HealthActivity/?id='+SectionID);
+    });
+})
 
 function checkAuthenticated(req, res) {
     if (!req.session.Authenticated) {

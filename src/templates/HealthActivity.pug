@@ -4,6 +4,21 @@ head
   style 
     include ../stylesheets/styles2.css
   meta(charset='utf-8')
+  script.
+    const SectionId = #{activityId};
+
+    function Remove() {
+      let id = prompt("Please enter the activity ID you would like to remove");
+      if (id == null || id == "") {
+        alert("Removal Cancelled");
+      } else {
+        var data = {SectionID: SectionId, ActivityID: id};
+        var http = new XMLHttpRequest();
+        http.open("POST", '/RemoveActivity', true);
+        http.setRequestHeader("Content-Type", "application/json");
+        http.send(JSON.stringify(data));
+      }
+    }
 .topbar
   img#logo(src='../images/patientMonitoringlogo.jpg')
 .sidebar
@@ -27,7 +42,7 @@ head
       tr
         each line in result
           td #{line}
-  form
+  #buttonContainer
     button Add
-    button Remove
+    button(onclick='Remove()') Remove
     button Edit

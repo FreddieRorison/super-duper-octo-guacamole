@@ -153,7 +153,7 @@ body {
     padding: 0.5rem 1rem 0.5rem 1rem;
     border: 0.1em solid black
 }
-#HealthActivity form {
+#HealthActivity #buttonContainer {
     margin: 1rem 0 0 6rem;
 }
 #HealthActivity button {
