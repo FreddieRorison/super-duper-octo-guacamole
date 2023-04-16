@@ -1,0 +1,21 @@
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='/images/patientMonitoringlogo.jpg')
+#loginBox
+  h1 Register
+  h2
+    | Already have an account? 
+    a(href='/login') Login
+  form(action='/register' method='POST')
+    input(type='text' placeholder='Firstname' name='firstname' value='Freddie')
+    input(type='text' placeholder='Surname' name='surname' value='Rorison')
+    input(type='text' placeholder='Email' name='email' value='test@test.com')
+    input(type='password' placeholder='Password' name='password' value='TestPass')
+    input(type='password' placeholder='Confirm Password')
+    button(type='submit') Submit
+script(type='text/javascript').
+  #{javascript}

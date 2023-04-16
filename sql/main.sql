@@ -10,7 +10,6 @@ CREATE TABLE Users (
     Surname varchar(255),
     Email varchar(255) NOT NULL,
     Password varchar(255) NOT NULL,
-    DateOfBirth DATE NOT NULL,
     Admin Boolean DEFAULT false,
     PRIMARY KEY (UserID)
 );

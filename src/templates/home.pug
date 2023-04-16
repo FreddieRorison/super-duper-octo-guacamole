@@ -1,0 +1,18 @@
+head
+  title Medical App
+  style
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='/images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='home.html') Home
+    li
+      a(href='HealthActivitiesMenu.html') Settings
+#homepage.contentContainer
+  h1 Welcome back, #{firstname}
+  each section in sections
+    .HealthActivitiesMenuOption
+        a(href='/Activities/' + section.SectionID) #{section.Name}

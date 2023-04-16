@@ -24,127 +24,70 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // GET REQUESTS
 // To be changed
 app.get('/', (req, res) => {
-    if (checkAuthenticated(req,res)) {res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {firstname: req.session.Firstname}))}
+    if (Authed(req)) {
+        connection.query('SELECT SectionID, Name FROM healthsections;', function (err, results, fields) {
+            res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {firstname: req.session.Firstname, sections: results}))
+        })
+    } else {res.redirect('/login')};
 });
+app.get('/images/patientMonitoringlogo.jpg', (req, res) => {
+    res.sendFile(__dirname + "/src/images/patientMonitoringLogo.jpg");
+})
 app.get('/login', (req, res) => {
-    if (req.session.Authenticated) {res.redirect('/');return;};
-    res.send(pug.renderFile(__dirname + "/src/templates/login.pug"));
+    if (!Authed(req)) {res.send(pug.renderFile(__dirname + "/src/templates/login.pug"))} else {res.redirect('/')};
   });
 app.get('/register', (req, res) => {
-    if (req.session.Authenticated) {res.redirect('/');return;};
-    res.render(__dirname + "/src/templates/register.pug");
+    if (!Authed(req)) {res.send(pug.renderFile(__dirname + "/src/templates/register.pug"))} else {res.redirect('/')};
 });
-app.get('/HealthActivitiesMenu', (req, res) => {
-    if (!req.session.Authenticated) {res.redirect('/login');return;};
+app.get('/Activities/:SectionID/Poop', (req, res) => {
+    console.log(req.params);
+    res.send('Poop');
+})
 
-    connection.query('SELECT SectionID, Name FROM healthsection;', function (err, results, fields) {
-        if (err) throw err;
-        res.send(pug.renderFile(__dirname + "/src/templates/HealthActivitiesMenu.pug", {results}))
-    });
-})
-app.get('/HealthActivity', (req, res) => {
-    if (!req.session.Authenticated) {res.redirect('/login');return;};
-    const activityId = req.query.id;
-    if (!activityId) {res.redirect('/HealthActivitiesMenu')}
-    connection.query('SELECT * FROM healthsection, bloodpressurerecord, bodytemperaturerecord, pulseraterecord, resperationrecord HAVING SectionID = ?;', [activityId], function (err, result, fields) {
-        console.log(result);
-        console.log(fields);
-    });;
-})
-//SELECT * FROM healthactivity, bloodpressurerecord, bodytemperaturerecord, pulseraterecord, resperationraterecord GROUP BY healthactivity.ActivityID HAVING SectionID = 1 ;
 // POST REQUESTS
 //Allows the user to register an account
 app.post('/register', (req, res) => {
-    if (req.session.Authenticated) {
-        res.redirect('/');
-        return;
-    }
-
-    const body = req.body;
-    var firstname = body.firstname;
-    var surname = body.surname;
-    var email = body.email;
-    var password = body.password;
-    var date = body.date;
-
-    connection.query(`INSERT INTO users (Firstname, Surname, Email, Password, DateOfBirth) VALUES ('${firstname}','${surname}','${email}', '${password}', '${date}');`);
-    res.redirect('/login');
+    var firstname = req.body.firstname;
+    var surname = req.body.surname;
+    var email = req.body.email;
+    var password = req.body.password;
+    
+    connection.query(`SELECT * FROM Users WHERE email = ?;`, [email], function (err, results, fields) {
+        if (results.length > 0) {
+            res.send(pug.renderFile(__dirname + "/src/templates/register.pug", {javascript: "alert('User with that email already exists!')"}));
+        } else {
+            connection.query('INSERT INTO Users (firstname, surname, email, password) VALUES (?,?,?,?);', [firstname,surname,email,password], function (error, result, field) {
+                res.redirect('/');
+            });
+        }
+    });
 });
 
 app.post('/login', (req, res) => {
-    if (req.session.Authenticated) {
-        res.redirect('/');
-        return;
-    }
+    var email = req.body.email;
+    var password = req.body.password;
 
-    const body = req.body;
-    var email = body.email;
-    var password = body.password;
-
-    connection.query('SELECT UserID, Firstname FROM users WHERE Email= ?  AND Password= ? ;', [email, password], function (err, result, fields) {
-        if (err) throw err;
+    connection.query('SELECT UserID, Firstname, Surname, Email, Admin FROM users WHERE Email= ?  AND Password= ? ;', [email, password], function (err, result, fields) {
         if (result.length > 0) {
-            req.session.Authenticated = true;
             req.session.UserID = result[0].UserID;
             req.session.Firstname = result[0].Firstname;
+            req.session.Surname = result[0].Surname;
+            req.session.Email = result[0].Email;
+            req.session.Admin = result[0].Admin;
             res.redirect('/')
         } else {
             res.send(pug.renderFile(__dirname + "/src/templates/login.pug", {javascript: "alert('Email/Password incorrect')"}));
         }
     });
 });
-app.post('/RemoveActivity', (req, res) => {
-    var SectionID = req.body.SectionID;
-    var ActivityID = req.body.ActivityID;
-    
-    connection.query('DELETE FROM healthactivity WHERE ActivityID = ? AND UserID = ? AND SectionID = ?', [ActivityID, req.session.UserID, SectionID], function(err, result) {
-        if (err) {throw err;}
-        res.redirect('/HealthActivity/?id='+SectionID);
-    });
-})
-
-function checkAuthenticated(req, res) {
-    if (!req.session.Authenticated) {
-        res.redirect('/login');
-    } else {
-        return true;
-    }
-}
 
 // Allow the application to listen on selected port
 app.listen(port, function() {
     console.log(`Now listening on port ${port}`);
 });
 
-/*app.get('/HealthActivity', (req, res) => {
-    if (!req.session.Authenticated) {res.redirect('/login');return;};
-    const activityId = req.query.id;
-    if (!activityId) {res.redirect('/HealthActivitiesMenu')}
-    connection.query('SELECT * FROM healthsection WHERE SectionID = ? ;', [activityId], function (err, result, fields) {
-        var string1 = 'healthactivity.ActivityID,';
-        var string2 = 'healthactivity,';
-        if (result[0].PulseRate == 1) {
-            string1 = string1 + 'PulseRate,';
-            string2 = string2 + 'pulseraterecord,'
-        }
-        if (result[0].BodyTemp == 1) {
-            string1 = string1 + 'BodyTemperature,';
-            string2 = string2 + 'bodytemperaturerecord,'
-        }
-        if (result[0].BloodPressure == 1) {
-            string1 = string1 + 'Systollic, Diastolic,';
-            string2 = string2 + 'bloodpressurerecord,'
-        }
-        if (result[0].ResperationRate == 1) {
-            string1 = string1 + 'resperationrate,';
-            string2 = string2 + 'resperationraterecord,'
-        }
-        string1 = string1.slice(0, string1.length-1);
-        string2 = string2.slice(0, string2.length-1);
-        var name = result[0].Name;
-        sql = `SELECT ${string1} FROM ${string2} WHERE SectionID = ${activityId} GROUP BY healthactivity.ActivityID;`;
-        connection.query(sql, function(err, results, fields) {
-            res.send(pug.renderFile(__dirname + "/src/templates/HealthActivity.pug", {fields,results, name, activityId}))
-        });
-    });;
-}) */
+function Authed(req) {
+    if (req.session.UserID == null || req.session.UserID == "") {
+        return false;
+    } else {return true;}
+}
