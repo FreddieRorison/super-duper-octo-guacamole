@@ -46,35 +46,12 @@ app.get('/HealthActivity', (req, res) => {
     if (!req.session.Authenticated) {res.redirect('/login');return;};
     const activityId = req.query.id;
     if (!activityId) {res.redirect('/HealthActivitiesMenu')}
-    connection.query('SELECT * FROM healthsection WHERE SectionID = ? ;', [activityId], function (err, result, fields) {
-        var string1 = 'healthactivity.ActivityID,';
-        var string2 = 'healthactivity,';
-        if (result[0].PulseRate == 1) {
-            string1 = string1 + 'PulseRate,';
-            string2 = string2 + 'pulseraterecord,'
-        }
-        if (result[0].BodyTemp == 1) {
-            string1 = string1 + 'BodyTemperature,';
-            string2 = string2 + 'bodytemperaturerecord,'
-        }
-        if (result[0].BloodPressure == 1) {
-            string1 = string1 + 'Systollic, Diastolic,';
-            string2 = string2 + 'bloodpressurerecord,'
-        }
-        if (result[0].ResperationRate == 1) {
-            string1 = string1 + 'resperationrate,';
-            string2 = string2 + 'resperationraterecord,'
-        }
-        string1 = string1.slice(0, string1.length-1);
-        string2 = string2.slice(0, string2.length-1);
-        var name = result[0].Name;
-        sql = `SELECT ${string1} FROM ${string2} WHERE SectionID = ${activityId};`;
-        connection.query(sql, function(err, results, fields) {
-            res.send(pug.renderFile(__dirname + "/src/templates/HealthActivity.pug", {fields,results, name, activityId}))
-        });
+    connection.query('SELECT * FROM healthsection, bloodpressurerecord, bodytemperaturerecord, pulseraterecord, resperationrecord HAVING SectionID = ?;', [activityId], function (err, result, fields) {
+        console.log(result);
+        console.log(fields);
     });;
 })
-
+//SELECT * FROM healthactivity, bloodpressurerecord, bodytemperaturerecord, pulseraterecord, resperationraterecord GROUP BY healthactivity.ActivityID HAVING SectionID = 1 ;
 // POST REQUESTS
 //Allows the user to register an account
 app.post('/register', (req, res) => {
@@ -138,3 +115,36 @@ function checkAuthenticated(req, res) {
 app.listen(port, function() {
     console.log(`Now listening on port ${port}`);
 });
+
+/*app.get('/HealthActivity', (req, res) => {
+    if (!req.session.Authenticated) {res.redirect('/login');return;};
+    const activityId = req.query.id;
+    if (!activityId) {res.redirect('/HealthActivitiesMenu')}
+    connection.query('SELECT * FROM healthsection WHERE SectionID = ? ;', [activityId], function (err, result, fields) {
+        var string1 = 'healthactivity.ActivityID,';
+        var string2 = 'healthactivity,';
+        if (result[0].PulseRate == 1) {
+            string1 = string1 + 'PulseRate,';
+            string2 = string2 + 'pulseraterecord,'
+        }
+        if (result[0].BodyTemp == 1) {
+            string1 = string1 + 'BodyTemperature,';
+            string2 = string2 + 'bodytemperaturerecord,'
+        }
+        if (result[0].BloodPressure == 1) {
+            string1 = string1 + 'Systollic, Diastolic,';
+            string2 = string2 + 'bloodpressurerecord,'
+        }
+        if (result[0].ResperationRate == 1) {
+            string1 = string1 + 'resperationrate,';
+            string2 = string2 + 'resperationraterecord,'
+        }
+        string1 = string1.slice(0, string1.length-1);
+        string2 = string2.slice(0, string2.length-1);
+        var name = result[0].Name;
+        sql = `SELECT ${string1} FROM ${string2} WHERE SectionID = ${activityId} GROUP BY healthactivity.ActivityID;`;
+        connection.query(sql, function(err, results, fields) {
+            res.send(pug.renderFile(__dirname + "/src/templates/HealthActivity.pug", {fields,results, name, activityId}))
+        });
+    });;
+}) */

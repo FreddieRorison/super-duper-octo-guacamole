@@ -1,0 +1,26 @@
+doctype html
+head
+  title Medical App
+  link(type='text/css' rel='stylesheet' href='../stylesheets/styles2.css')
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='../images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/') Home
+    li
+      a(href='.HealthActivitiesMenu') Health Activities
+    li
+      a(href='') Exercise Tracker
+    li
+      a(href='') Medication Tracker
+#activityAdd.contentContainer
+  h1 #{ActivityName}
+  h2 Add Record
+  form(action='/HealthActivityAdd')
+    input(type='text' placeholder='Yes' name)
+    input(type='text' placeholder='No')
+    input(type='text' placeholder='Yes')
+    input(type='text' placeholder='Npo')
+    button(type='submit') Submit
