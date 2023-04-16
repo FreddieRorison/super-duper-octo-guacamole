@@ -1,0 +1,48 @@
+doctype html
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='../images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/home') Home
+    li
+      a(href='') Settings
+#HealthActivity.contentContainer
+  h1 Health Data
+  #graphContainer
+  table
+    tr
+      td ID
+      td Body Temperature
+      td Pulse Rate
+      td Blood Pressure
+      td Resperation Rate
+      td ECG
+    each result in results
+        tr
+        each line in result
+            td #{line}
+
+  #buttonContainer
+    button Add
+    button(onclick='Remove()') Remove
+    button Edit
+
+  script.
+    function Remove() {
+      let id = prompt("Please enter the activity ID you would like to remove");
+      if (id == null || id == "") {
+        alert("Removal Cancelled");
+      } else {
+        var data = {RecordID: id};
+        var http = new XMLHttpRequest();
+        http.open("POST", window.location.href + '/Remove', true);
+        http.setRequestHeader("Content-Type", "application/json");
+        http.send(JSON.stringify(data));
+      }
+    }

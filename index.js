@@ -62,6 +62,22 @@ app.get('/Activities/:SectionID', (req, res) => {
         res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
     })
 })
+app.get('/Activities/:SectionID/HealthData', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+
+    connection.query('SELECT RecordID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
+        res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
+    })
+})
+app.get('/Activities/:SectionID/HealthData/Add', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+
+    connection.query('SELECT RecordID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
+        res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
+    })
+})
 
 // POST REQUESTS
 //Allows the user to register an account
@@ -98,6 +114,15 @@ app.post('/login', (req, res) => {
         }
     });
 });
+app.post('/Activities/:SectionID/HealthData/Remove', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.body.RecordID;
+
+    connection.query('DELETE FROM healthdata WHERE SectionID = ? AND UserID = ? AND RecordID = ?;', [SectionID, req.session.UserID, RecordID], function (err, results, fields) {
+        res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
+    })
+})
 
 // Allow the application to listen on selected port
 app.listen(port, function() {
