@@ -74,9 +74,7 @@ app.get('/Activities/:SectionID/HealthData/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    connection.query('SELECT RecordID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
-        res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
-    })
+    res.send(pug.renderFile(__dirname + "/src/templates/healthdataAdd.pug"));
 })
 
 // POST REQUESTS
@@ -121,6 +119,19 @@ app.post('/Activities/:SectionID/HealthData/Remove', (req, res) => {
 
     connection.query('DELETE FROM healthdata WHERE SectionID = ? AND UserID = ? AND RecordID = ?;', [SectionID, req.session.UserID, RecordID], function (err, results, fields) {
         res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
+    })
+})
+app.post('/Activities/:SectionID/HealthData/Add', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const BodyTemp = req.body.BodyTemp;
+    const PulseRate = req.body.PulseRate;
+    const BloodPressure = req.body.BloodPressure;
+    const ResperationRate = req.body.ResperationRate;
+    const ECG = req.body.ECG;
+
+    connection.query('INSERT INTO HealthData (UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG) VALUES (?,?,?,?,?,?,?);', [req.session.UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG], function (err, results, fields) {
+        res.redirect(`/Activities/${SectionID}/HealthData`);
     })
 })
 
