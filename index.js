@@ -39,9 +39,28 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     if (!Authed(req)) {res.send(pug.renderFile(__dirname + "/src/templates/register.pug"))} else {res.redirect('/')};
 });
-app.get('/Activities/:SectionID/Poop', (req, res) => {
-    console.log(req.params);
-    res.send('Poop');
+app.get('/Activities/:SectionID', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+
+    connection.query('SELECT Name, SensoryData, MentalData, DiseaseData FROM healthsections WHERE SectionID = ?', [SectionID], function (err, result, fields) {
+        var activities = []
+        var iterator = 0;
+        if (result[0].SensoryData == 1) {
+            activities[iterator] = {Name: 'Health Data', Link: 'HealthData'}
+            iterator = iterator + 1;
+        } 
+        if (result[0].MentalData == 1) {
+            activities[iterator] = {Name: 'Mental Health Data', Link: 'MentalData'}
+            iterator = iterator + 1;
+        } 
+        if (result[0].DiseaseData == 1) {
+            activities[iterator] = {Name: 'Disease Data', Link: 'DiseaseData'}
+            iterator = iterator + 1;
+        }
+
+        res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
+    })
 })
 
 // POST REQUESTS
@@ -62,7 +81,6 @@ app.post('/register', (req, res) => {
         }
     });
 });
-
 app.post('/login', (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
