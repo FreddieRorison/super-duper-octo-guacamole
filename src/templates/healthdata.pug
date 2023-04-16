@@ -30,11 +30,11 @@ head
   #buttonContainer
     button(onclick='Add()') Add
     button(onclick='Remove()') Remove
-    button Edit
+    button(onclick='Edit()') Edit
 
   script.
     function Remove() {
-      let id = prompt("Please enter the activity ID you would like to remove");
+      let id = prompt("Please enter the Record ID you would like to remove");
       if (id == null || id == "") {
         alert("Removal Cancelled");
       } else {
@@ -48,4 +48,13 @@ head
     function Add() {
         var url = window.location.href;
         window.location.href = url + '/Add';
+    }
+    function Edit() {
+        let id = prompt("Please enter the Record ID you would like to edit");
+        if (id == null || id == "") {
+        alert("Removal Cancelled");
+      } else {
+        var url = window.location.href;
+        window.location.href = url + '/'+id+'/Edit'
+      }
     }

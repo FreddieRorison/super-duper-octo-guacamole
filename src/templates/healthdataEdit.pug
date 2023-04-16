@@ -1,0 +1,23 @@
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='../images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/') Home
+    li
+      a(href='/HealthActivitiesMenu') Health Activities
+#activityAdd.contentContainer
+  h1 Health Data
+  h2 Edit Record
+  form(method='POST')
+    input(type='text' placeholder='Body Temperature' name='BodyTemp' value='' + results.BodyTemp)
+    input(type='text' placeholder='Pulse Rate' name='PulseRate' value='' + results.PulseRate)
+    input(type='text' placeholder='Blood Pressure' name='BloodPressure' value='' + results.BloodPressure)
+    input(type='text' placeholder='Resperation Rate' name='ResperationRate' value='' + results.ResperationRate)
+    input(type='text' placeholder='ECG' name='ECG' value='' + results.ECG)
+    button(type='submit') Submit

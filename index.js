@@ -76,6 +76,17 @@ app.get('/Activities/:SectionID/HealthData/Add', (req, res) => {
 
     res.send(pug.renderFile(__dirname + "/src/templates/healthdataAdd.pug"));
 })
+app.get('/Activities/:SectionID/HealthData/:RecordID/Edit', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.params.RecordID;
+
+    connection.query('SELECT BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE RecordID = ?;', [RecordID], function (err, results, fields) {
+        console.log(results[0]);
+        res.send(pug.renderFile(__dirname + "/src/templates/healthdataEdit.pug", {results: results[0]}));
+    })
+})
+
 
 // POST REQUESTS
 //Allows the user to register an account
@@ -133,6 +144,21 @@ app.post('/Activities/:SectionID/HealthData/Add', (req, res) => {
     connection.query('INSERT INTO HealthData (UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG) VALUES (?,?,?,?,?,?,?);', [req.session.UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG], function (err, results, fields) {
         res.redirect(`/Activities/${SectionID}/HealthData`);
     })
+})
+app.post('/Activities/:SectionID/HealthData/:RecordID/Edit', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.params.RecordID;
+    const BodyTemp = req.body.BodyTemp;
+    const PulseRate = req.body.PulseRate;
+    const BloodPressure = req.body.BloodPressure;
+    const ResperationRate = req.body.ResperationRate;
+    const ECG = req.body.ECG;
+
+    connection.query('UPDATE healthdata SET BodyTemp = ?, PulseRate = ?, BloodPressure = ?, ResperationRate = ?, ECG = ? WHERE RecordID = ?;', [BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG, RecordID], function (err, results, fields ) {
+        res.redirect(`/Activities/${SectionID}/HealthData`);
+    })
+
 })
 
 // Allow the application to listen on selected port
