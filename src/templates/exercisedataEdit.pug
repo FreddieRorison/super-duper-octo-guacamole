@@ -1,0 +1,21 @@
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='../images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/') Home
+    li
+      a(href='/HealthActivitiesMenu') Health Activities
+#activityAdd.contentContainer
+  h1 Exercise Data
+  h2 Edit Record
+  form(method='POST')
+    input(type='text' placeholder='Duration' name='Duration' value=''+results.duration)
+    input(type='text' placeholder='Notes' name='Note' value=''+results.note)
+    input(type='date' name='Date' value=''+ results.date)
+    button(type='submit') Submit

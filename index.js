@@ -14,7 +14,7 @@ app.use(session({
 
 // Port application will listen on
 const port = config.port;
-var connection = mysql.createConnection({host:config.mysql.hostname,user:config.mysql.username,password:config.mysql.password,database:config.mysql.database});
+var connection = mysql.createConnection({host:config.mysql.hostname,user:config.mysql.username,password:config.mysql.password,database:config.mysql.database,dateStrings: true});
 connection.connect();
 
 //Other stuff
@@ -47,7 +47,7 @@ app.get('/Activities/:SectionID', (req, res) => {
         var activities = []
         var iterator = 0;
         if (result[0].SensoryData == 1) {
-            activities[iterator] = {Name: 'Health Data', Link: 'HealthData'}
+            activities[iterator] = {Name: 'Sensory Data', Link: 'SensoryData'}
             iterator = iterator + 1;
         } 
         if (result[0].MentalData == 1) {
@@ -62,7 +62,13 @@ app.get('/Activities/:SectionID', (req, res) => {
         res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
     })
 })
-app.get('/Activities/:SectionID/HealthData', (req, res) => {
+app.get('/Activities/:SectionID/SensoryData', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const SectionName = getSectionName(SectionID);
+    res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, SectionName: SectionName}));
+})
+app.get('/Activities/:SectionID/SensoryData/HealthData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
@@ -70,23 +76,46 @@ app.get('/Activities/:SectionID/HealthData', (req, res) => {
         res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
     })
 })
-app.get('/Activities/:SectionID/HealthData/Add', (req, res) => {
+app.get('/Activities/:SectionID/SensoryData/HealthData/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
     res.send(pug.renderFile(__dirname + "/src/templates/healthdataAdd.pug"));
 })
-app.get('/Activities/:SectionID/HealthData/:RecordID/Edit', (req, res) => {
+app.get('/Activities/:SectionID/SensoryData/HealthData/:RecordID/Edit', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
     const RecordID = req.params.RecordID;
 
     connection.query('SELECT BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE RecordID = ?;', [RecordID], function (err, results, fields) {
-        console.log(results[0]);
+        if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/HealthData`); return;}
         res.send(pug.renderFile(__dirname + "/src/templates/healthdataEdit.pug", {results: results[0]}));
     })
 })
+app.get('/Activities/:SectionID/SensoryData/ExerciseData', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
 
+    connection.query('SELECT RecordID, Duration, Note, Date FROM exercisedata WHERE SectionID = ? AND UserID = ? ORDER BY date DESC;', [SectionID, req.session.UserID], function (err, results, fields) {
+        res.send(pug.renderFile(__dirname + "/src/templates/exercisedata.pug", {results: results}))
+    })
+})
+app.get('/Activities/:SectionID/SensoryData/ExerciseData/Add', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+
+    res.send(pug.renderFile(__dirname + "/src/templates/exercisedataAdd.pug"));
+})
+app.get('/Activities/:SectionID/SensoryData/ExerciseData/:RecordID/Edit', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.params.RecordID;
+
+    connection.query('SELECT duration, note, date FROM ExerciseData WHERE RecordID = ?;', [RecordID], function (err, results, fields) {
+        if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/ExerciseData`); return;}
+        res.send(pug.renderFile(__dirname + "/src/templates/exercisedataEdit.pug", {results: results[0]}));
+    })
+})
 
 // POST REQUESTS
 //Allows the user to register an account
@@ -123,7 +152,7 @@ app.post('/login', (req, res) => {
         }
     });
 });
-app.post('/Activities/:SectionID/HealthData/Remove', (req, res) => {
+app.post('/Activities/:SectionID/SensoryData/HealthData/Remove', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
     const RecordID = req.body.RecordID;
@@ -132,7 +161,7 @@ app.post('/Activities/:SectionID/HealthData/Remove', (req, res) => {
         res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
     })
 })
-app.post('/Activities/:SectionID/HealthData/Add', (req, res) => {
+app.post('/Activities/:SectionID/SensoryData/HealthData/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
     const BodyTemp = req.body.BodyTemp;
@@ -145,7 +174,7 @@ app.post('/Activities/:SectionID/HealthData/Add', (req, res) => {
         res.redirect(`/Activities/${SectionID}/HealthData`);
     })
 })
-app.post('/Activities/:SectionID/HealthData/:RecordID/Edit', (req, res) => {
+app.post('/Activities/:SectionID/SensoryData/HealthData/:RecordID/Edit', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
     const RecordID = req.params.RecordID;
@@ -156,10 +185,45 @@ app.post('/Activities/:SectionID/HealthData/:RecordID/Edit', (req, res) => {
     const ECG = req.body.ECG;
 
     connection.query('UPDATE healthdata SET BodyTemp = ?, PulseRate = ?, BloodPressure = ?, ResperationRate = ?, ECG = ? WHERE RecordID = ?;', [BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG, RecordID], function (err, results, fields ) {
-        res.redirect(`/Activities/${SectionID}/HealthData`);
+        res.redirect(`/Activities/${SectionID}/SensoryData/HealthData`);
     })
 
 })
+app.post('/Activities/:SectionID/SensoryData/ExerciseData/Remove', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.body.RecordID;
+
+    connection.query('DELETE FROM exercisedata WHERE SectionID = ? AND UserID = ? AND RecordID = ?;', [SectionID, req.session.UserID, RecordID], function (err, results, fields) {
+        res.sendStatus(200);
+    })
+})
+app.post('/Activities/:SectionID/SensoryData/ExerciseData/Add', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const Duration = req.body.Duration;
+    const Notes = req.body.Notes;
+    const Date = req.body.Date;
+
+    connection.query('INSERT INTO ExerciseData (USerID, SectionID, Duration, Note, Date) VALUES (?,?,?,?,?);', [req.session.UserID, SectionID, Duration, Notes, Date], function (err, results, fields) {
+        res.redirect(`/Activities/${SectionID}/ExerciseData`);
+    })
+})
+app.post('/Activities/:SectionID/SensoryData/ExerciseData/:RecordID/Edit', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.params.RecordID;
+    const Duration = req.body.Duration;
+    const Note = req.body.Note;
+    const Date = req.body.Date;
+
+    connection.query('UPDATE exercisedata SET duration = ?, note = ?, date = ? WHERE RecordID = ?;', [Duration, Note, Date, RecordID], function (err, results, fields ) {
+        if (err) {throw err};
+        res.redirect(`/Activities/${SectionID}/SensoryData/ExerciseData`);
+    })
+
+})
+
 
 // Allow the application to listen on selected port
 app.listen(port, function() {
@@ -170,4 +234,10 @@ function Authed(req) {
     if (req.session.UserID == null || req.session.UserID == "") {
         return false;
     } else {return true;}
+}
+
+function getSectionName(id) {
+    connection.query('SELECT Name from healthsections WHERE SectionID = ?;', [id], function (err, results, fields) {
+        return results[0].Name;
+    })
 }

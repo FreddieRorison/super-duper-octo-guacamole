@@ -1,0 +1,22 @@
+head
+  title Medical App
+  style
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='/images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/') Home
+    li
+      a(href='/settings') Settings
+#homepage.contentContainer
+  h1 #{SectionName}
+  h1 Sensory Data Menu
+  .HealthActivitiesMenuOption
+      a(href='/Activities/' + SectionID + '/SensoryData/HealthData') Health Data
+  .HealthActivitiesMenuOption
+      a(href='/Activities/' + SectionID + '/SensoryData/ExerciseData') Exercise Data
+  .HealthActivitiesMenuOption
+      a(href='/Activities/' + SectionID + '/SensoryData/HealthData') Reminders

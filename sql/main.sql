@@ -42,7 +42,7 @@ CREATE TABLE ExerciseData (
     SectionID int,
     Duration int,
     Note varchar(255),
-    date DateTime,
+    date DATE,
     PRIMARY KEY (RecordID),
     FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
