@@ -12,10 +12,13 @@ head
     li
       a(href='/HealthActivitiesMenu') Health Activities
 #activityAdd.contentContainer
-  h1 Exercise Data
-  h2 Add Record
+  h1 Add Reminder
   form(method='POST')
-    input(type='text' placeholder='Duration' name='Duration')
-    input(type='text' placeholder='Notes' name='Notes')
+    input(type='text' placeholder='Name' name='Name')
+    label(for="Date") Reminder Date 
     input(type='date' name='Date')
+    label(for="Repeats") Repeat reminder?
+    input(type='checkbox' placeholder='Repeats?' name='Repeats')
+    label(for="Period") How often in days (Optional)
+    input(type='text' placeholder='Period' name='Period')
     button(type='submit') Submit

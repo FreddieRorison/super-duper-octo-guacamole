@@ -47,14 +47,15 @@ CREATE TABLE ExerciseData (
     FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 );
-CREATE TABLE MedicationData (
-    RecordID INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE Reminders (
+    ReminderID INT NOT NULL AUTO_INCREMENT,
     UserID int,
     SectionID int,
     Name varchar(255),
+    Date DATE,
+    Repeatit Boolean,
     Period int,
-    DateTime DATETIME,
-    PRIMARY KEY (RecordID),
+    PRIMARY KEY (ReminderID),
     FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 );

@@ -1,0 +1,27 @@
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='/images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/') Home
+    li
+      a(href='/HealthActivitiesMenu') Health Activities
+#activityAdd.contentContainer
+  h1 Edit Reminder
+  form(method='POST')
+    input(type='text' placeholder='Name' name='Name' value=''+results.Name)
+    label(for="Date" value=''+results.Name) Reminder Date 
+    input(type='date' name='Date' value=''+results.Date)
+    label(for="Repeats") Repeat reminder?
+    if results.Repeatit == 1
+      input(type='checkbox' name='Repeats' checked)
+    else
+      input(type='checkbox' name='Repeats')
+    label(for="Period") How often in days (Optional)
+    input(type='text' placeholder='Period' name='Period' value=''+results.Period)
+    button(type='submit') Submit
