@@ -75,11 +75,15 @@ app.get('/Activities/:SectionID/SensoryData', (req, res) => {
             var testDate = new Date(split[0], split[1]-1, split[2]);
             var d1 = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
             var d2 = testDate.getDate() + '-' + testDate.getMonth() + '-' + testDate.getFullYear();
-            console.log(d1+d2)
             if (d1 == d2) {
                 reminders[iterator] = {Name: results[i].Name}
                 iterator++
+            } else if (!(testDate > date) && (Math.floor((((date.getTime() - testDate.getTime()))/1000/60/60/24)) % results[i].Period) == 0 && results[i].Repeatit == 1) {
+                reminders[iterator] = {Name: results[i].Name}
+                iterator++
             }
+            console.log((Math.floor((((date.getTime() - testDate.getTime()))/1000/60/60/24)) % results[i].Period))
+            console.log(testDate > date)
             i++
         }
         res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders}));
