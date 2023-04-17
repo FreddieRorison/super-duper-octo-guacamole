@@ -65,8 +65,25 @@ app.get('/Activities/:SectionID', (req, res) => {
 app.get('/Activities/:SectionID/SensoryData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
-    const SectionName = getSectionName(SectionID);
-    res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, SectionName: SectionName}));
+    connection.query('SELECT Name, Date, Repeatit, Period FROM Reminders WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
+        const date = new Date();
+        var reminders = []
+        var i = 0;
+        var iterator = 0;
+        while (i < results.length) {
+            var split = results[i].Date.split("-");
+            var testDate = new Date(split[0], split[1]-1, split[2]);
+            var d1 = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+            var d2 = testDate.getDate() + '-' + testDate.getMonth() + '-' + testDate.getFullYear();
+            console.log(d1+d2)
+            if (d1 == d2) {
+                reminders[iterator] = {Name: results[i].Name}
+                iterator++
+            }
+            i++
+        }
+        res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders}));
+    })
 })
 app.get('/Activities/:SectionID/SensoryData/HealthData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
@@ -297,10 +314,4 @@ function Authed(req) {
     if (req.session.UserID == null || req.session.UserID == "") {
         return false;
     } else {return true;}
-}
-
-function getSectionName(id) {
-    connection.query('SELECT Name from healthsections WHERE SectionID = ?;', [id], function (err, results, fields) {
-        return results[0].Name;
-    })
 }

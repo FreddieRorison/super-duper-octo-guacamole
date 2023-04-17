@@ -12,11 +12,18 @@ head
     li
       a(href='/settings') Settings
 #homepage.contentContainer
-  h1 #{SectionName}
-  h1 Sensory Data Menu
-  .HealthActivitiesMenuOption
+  #MenuContainer
+    h1 Sensory Data Menu
+    .HealthActivitiesMenuOption
       a(href='/Activities/' + SectionID + '/SensoryData/HealthData') Health Data
-  .HealthActivitiesMenuOption
+    .HealthActivitiesMenuOption
       a(href='/Activities/' + SectionID + '/SensoryData/ExerciseData') Exercise Data
-  .HealthActivitiesMenuOption
+    .HealthActivitiesMenuOption
       a(href='/Activities/' + SectionID + '/SensoryData/Reminders') Reminders
+  #ReminderContainer 
+    h1 Reminders
+    h2 Today
+    table 
+      each reminder in RemindersToday
+        tr
+          td #{reminder.Name}

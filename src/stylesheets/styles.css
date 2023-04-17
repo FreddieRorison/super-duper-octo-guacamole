@@ -205,4 +205,11 @@ body {
     margin: auto;
     background-color: darkgray;
 }
-
+#MenuContainer {
+    display: inline-block;
+    width: 75%;
+}
+#ReminderContainer {
+    display: inline-block;
+    width: 25%;
+}
