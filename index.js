@@ -99,7 +99,6 @@ app.get('/Activities/:SectionID/SensoryData', (req, res) => {
                 reminders[iterator] = {Name: results[i].Name}
                 iterator++
             }
-
             i++
         }
         res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders}));
@@ -181,9 +180,36 @@ app.get('/Activities/:SectionID/SensoryData/Reminders/:RecordID/Edit', (req, res
 app.get('/Activities/:SectionID/MentalData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
-    const date = new Date();
 
-
+    connection.query('SELECT Date FROM MentalCheckIn WHERE ID = ? ORDER BY DATE DESC', [SectionID], function (err, result, fields) {
+        const date = new Date();
+        if (result[0] == null) {res.send(pug.renderFile(__dirname + "/src/templates/mentalCheckIn.pug")); return;}
+        var split = result[0].Date.split("-");
+        var testDate = new Date(split[0], split[1]-1, split[2]);
+        var d1 = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+        var d2 = testDate.getDate() + '-' + testDate.getMonth() + '-' + testDate.getFullYear();
+        if (d1 != d2) {res.send(pug.renderFile(__dirname + "/src/templates/mentalCheckIn.pug")); return;}
+        connection.query('SELECT NoteID, Notes, Date FROM MentalNotes WHERE ID = ?', [SectionID], function (err, results, fields) {
+            res.send(pug.renderFile(__dirname + "/src/templates/mentalData.pug", {results: results}));
+        })
+    })
+    
+})
+app.get('/Activities/:SectionID/MentalData/Add', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    
+    res.send(pug.renderFile(__dirname + "/src/templates/mentalNotesAdd.pug"));
+})
+app.get('/Activities/:SectionID/MentalData/:RecordID/Edit', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.params.RecordID;
+    
+    connection.query('SELECT Notes FROM MentalNotes WHERE NoteID = ?;', [RecordID], function (err, results, fields) {
+        if (results[0] == null) {res.redirect(`/Activities/${SectionID}/MentalData`); return;}
+        res.send(pug.renderFile(__dirname + "/src/templates/mentalNotesEdit.pug", {results: results[0]}));
+    })
 })
 
 // POST REQUESTS
@@ -327,6 +353,46 @@ app.post('/Activities/:SectionID/SensoryData/Reminders/:RecordID/Edit', (req, re
     connection.query('UPDATE reminders SET Name = ?, Date = ?, repeatit = ?, Period = ? WHERE ReminderID = ?;', [Name, Date, Repeats, Period, RecordID], function (err, results, fields ) {
         if (err) {throw err};
         res.redirect(`/Activities/${SectionID}/SensoryData/Reminders`);
+    })
+
+})
+app.post('/Activities/:SectionID/MentalData/SubmitCheckIn', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const Number = req.body.Number;
+
+    connection.query('INSERT INTO MentalCheckIn (ID, MoodScore, Date) VALUES (?, ?, NOW())', [SectionID, Number], function (err, results, fields) {
+        if (err) {throw err;}
+        res.redirect('/Activities/:SectionID/MentalData');
+    })
+})
+app.post('/Activities/:SectionID/MentalData/Remove', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const ReminderID = req.body.RecordID;
+
+    connection.query('DELETE FROM MentalNotes WHERE ID = ? AND NoteID = ?;', [SectionID, ReminderID], function (err, results, fields) {
+        res.sendStatus(200)
+    })
+})
+app.post('/Activities/:SectionID/MentalData/Add', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const note = req.body.Note;
+
+    connection.query('INSERT INTO MentalNotes (ID, Notes, Date) VALUES (?,?, NOW());', [SectionID, note], function (err, result, fields) {if(err){throw err;}});
+
+    res.redirect(`/Activities/${SectionID}/MentalData`);
+})
+app.post('/Activities/:SectionID/MentalData/:RecordID/Edit', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const RecordID = req.params.RecordID;
+    const Note = req.body.Note;
+    
+    connection.query('UPDATE MentalNotes SET Notes = ? WHERE NoteID = ?;', [Note, RecordID], function (err, results, fields ) {
+        if (err) {throw err};
+        res.redirect(`/Activities/${SectionID}/MentalData`);
     })
 
 })

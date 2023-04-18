@@ -1,0 +1,58 @@
+head
+  title Medical App
+  style 
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='/images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='/') Home
+    li
+      a(href='') Settings
+#HealthActivity.contentContainer
+  h1 Mental Notes and Tracking
+  #graphContainer
+    canvas#graphBox
+  table
+    tr
+      td ID
+      td Note
+      td Date
+    each result in results
+        tr
+        each line in result
+            td #{line}
+
+  #buttonContainer
+    button(onclick='Add()') Add
+    button(onclick='Remove()') Remove
+    button(onclick='Edit()') Edit
+
+  script.
+    function Remove() {
+      let id = prompt("Please enter the Record ID you would like to remove");
+      if (id == null || id == "") {
+        alert("Removal Cancelled");
+      } else {
+        var data = {RecordID: id};
+        var http = new XMLHttpRequest();
+        http.open("POST", window.location.href + '/Remove', true);
+        http.setRequestHeader("Content-Type", "application/json");
+        http.send(JSON.stringify(data));
+      }
+    }
+    function Add() {
+        var url = window.location.href;
+        window.location.href = url + '/Add';
+    }
+    function Edit() {
+        let id = prompt("Please enter the Record ID you would like to edit");
+        if (id == null || id == "") {
+        alert("Removal Cancelled");
+      } else {
+        var url = window.location.href;
+        window.location.href = url + '/'+id+'/Edit'
+      }
+    }
