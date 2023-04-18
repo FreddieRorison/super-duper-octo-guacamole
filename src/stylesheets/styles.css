@@ -213,3 +213,14 @@ body {
     display: inline-block;
     width: 25%;
 }
+#homepage button {
+    width: 6rem;
+    height: 6rem;
+    font-size: 3rem;
+    display: inline-block;
+    margin: 2.5rem 0 0 1.75rem;
+}
+
+#homepage h2 {
+    margin-left: 1.5em;
+}
