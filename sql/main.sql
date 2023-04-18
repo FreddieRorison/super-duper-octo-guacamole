@@ -13,7 +13,6 @@ CREATE TABLE Users (
     Admin Boolean DEFAULT false,
     PRIMARY KEY (UserID)
 );
-
 CREATE TABLE HealthSections (
     SectionID INT NOT NULL AUTO_INCREMENT,
     Name varchar(255),
@@ -22,62 +21,78 @@ CREATE TABLE HealthSections (
     DiseaseData Boolean,
     PRIMARY KEY (SectionID)
 );
-
+CREATE TABLE SectionUserLink (
+    ID INT NOT NULL AUTO_INCREMENT,
+    SectionID int,
+    UserID int,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+);
 CREATE TABLE HealthData (
     RecordID INT NOT NULL AUTO_INCREMENT,
-    UserID int,
-    SectionID int,
+    ID int,
     BodyTemp int,
     PulseRate int,
     BloodPressure int,
     ResperationRate int,
     ECG int,
     PRIMARY KEY (RecordID),
-    FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
 CREATE TABLE ExerciseData (
     RecordID INT NOT NULL AUTO_INCREMENT,
-    UserID int,
-    SectionID int,
+    ID int,
     Duration int,
     Note varchar(255),
     date DATE,
     PRIMARY KEY (RecordID),
-    FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
 CREATE TABLE Reminders (
     ReminderID INT NOT NULL AUTO_INCREMENT,
-    UserID int,
-    SectionID int,
+    ID int,
     Name varchar(255),
-    Date DATE,
+    date DATE,
     Repeatit Boolean,
     Period int,
     PRIMARY KEY (ReminderID),
-    FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
 CREATE TABLE MentalData (
     RecordID INT NOT NULL AUTO_INCREMENT,
-    UserID int,
-    SectionID int,
-    Mood int,
-    Notes varchar(255),
-    DateTime DATETIME,
+    ID int,
     PRIMARY KEY (RecordID),
-    FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
-CREATE TABLE TrackAndTraceData (
-    RecordID INT NOT NULL AUTO_INCREMENT,
-    UserID int,
-    SectionID int,
-    LocationVisited varchar(255),
-    ArriveTime DATETIME,
-    LeaveTime DATETIME,
-    PRIMARY KEY (RecordID),
-    FOREIGN KEY (SectionID) REFERENCES HealthSections(SectionID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+CREATE TABLE MentalNotes (
+    NoteID INT NOT NULL AUTO_INCREMENT,
+    RecordID int,
+    Notes varchar(255),
+    date DATE,
+    PRIMARY KEY (NoteID),
+    FOREIGN KEY (RecordID) REFERENCES MentalData(RecordID) ON DELETE CASCADE
+);
+CREATE TABLE MentalCheckIn (
+    CheckInID INT NOT NULL AUTO_INCREMENT,
+    RecordID int,
+    MoodScore int,
+    date DATE,
+    PRIMARY KEY (CheckInID),
+    FOREIGN KEY (RecordID) REFERENCES MentalData(RecordID) ON DELETE CASCADE
+);
+CREATE TABLE Locations (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Name varchar(255),
+    PRIMARY KEY (ID)
+);
+CREATE TABLE LocationCheckIn (
+    CheckInID INT NOT NULL AUTO_INCREMENT,
+    ID int,
+    Location int,
+    date DATE,
+    Infected Boolean,
+    PRIMARY KEY (CheckInID),
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE,
+    FOREIGN KEY (Location) REFERENCES Locations(ID) ON DELETE CASCADE
 );
