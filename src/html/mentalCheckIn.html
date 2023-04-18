@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Medical App</title>
+        <link type="text/css" rel="stylesheet" href="../stylesheets/styles.css">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div class="topbar"><img src="../images/patientMonitoringlogo.jpg" id="logo"></div>
+        <div class="sidebar">
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="HealthActivitiesMenu.html">Settings</a></li>
+            </ul>
+        </div>
+        <div class="contentContainer" id="homepage">
+            <h1>Mental Health Tracker</h1>
+            <h2>How are you feeling today?</h2>
+            <button onclick="one()">🙁</button>
+            <button onclick="one()">😕</button>
+            <button onclick="one()">😐</button>
+            <button onclick="one()">🙂</button>
+            <button onclick="one()">😀</button>
+        </div>
+    </body>
+    <script>
+        var submitted = false;
+        function submit(number) {
+            if (number <= 5 && number >= 1) {
+                //submit code
+            }
+        }
+        function one() {
+            submit(1)
+        }
+        function two() {
+            submit(2)
+        }
+        function three() {
+            submit(3)
+        }
+        function four() {
+            submit(4)
+        }
+        function five() {
+            submit(5)
+        }
+    </script>
+</html>
