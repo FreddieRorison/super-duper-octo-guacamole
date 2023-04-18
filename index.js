@@ -42,8 +42,8 @@ app.get('/register', (req, res) => {
 app.get('/Activities/:SectionID', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
-
     connection.query('SELECT Name, SensoryData, MentalData, DiseaseData FROM healthsections WHERE SectionID = ?', [SectionID], function (err, result, fields) {
+        if (result.length <= 0) {res.redirect('/'); return;}
         var activities = []
         var iterator = 0;
         if (result[0].SensoryData == 1) {
@@ -60,7 +60,8 @@ app.get('/Activities/:SectionID', (req, res) => {
         }
 
         res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
-    })
+        })
+    
 })
 app.get('/Activities/:SectionID/SensoryData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
@@ -82,8 +83,6 @@ app.get('/Activities/:SectionID/SensoryData', (req, res) => {
                 reminders[iterator] = {Name: results[i].Name}
                 iterator++
             }
-            console.log((Math.floor((((date.getTime() - testDate.getTime()))/1000/60/60/24)) % results[i].Period))
-            console.log(testDate > date)
             i++
         }
         res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders}));
@@ -217,7 +216,7 @@ app.post('/Activities/:SectionID/SensoryData/HealthData/Add', (req, res) => {
     const ECG = req.body.ECG;
 
     connection.query('INSERT INTO HealthData (UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG) VALUES (?,?,?,?,?,?,?);', [req.session.UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG], function (err, results, fields) {
-        res.redirect(`/Activities/${SectionID}/SesnoryData/HealthData`);
+        res.redirect(`/Activities/${SectionID}/SensoryData/HealthData`);
     })
 })
 app.post('/Activities/:SectionID/SensoryData/HealthData/:RecordID/Edit', (req, res) => {
