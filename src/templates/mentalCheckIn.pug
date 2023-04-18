@@ -1,0 +1,49 @@
+doctype html
+head
+  title Medical App
+  style
+    include ../stylesheets/styles.css
+  meta(charset='utf-8')
+.topbar
+  img#logo(src='../images/patientMonitoringlogo.jpg')
+.sidebar
+  ul
+    li
+      a(href='home.html') Home
+    li
+      a(href='HealthActivitiesMenu.html') Settings
+#homepage.contentContainer
+  h1 Mental Health Tracker
+  h2 How are you feeling today?
+  button(onclick='one()') &#x1F641;
+  button(onclick='one()') &#x1F615;
+  button(onclick='one()') &#x1F610;
+  button(onclick='one()') &#x1F642;
+  button(onclick='one()') &#x1F600;
+script.
+  var submitted = false;
+  function submit(number) {
+  if (number <= 5 && number >= 1) {
+        var data = {Number: number};
+        var http = new XMLHttpRequest();
+        http.open("POST", window.location.href + '/SubmitCheckIn', true);
+        http.setRequestHeader("Content-Type", "application/json");
+        http.send(JSON.stringify(data));
+        window.location.reload();
+  }
+  }
+  function one() {
+  submit(1)
+  }
+  function two() {
+  submit(2)
+  }
+  function three() {
+  submit(3)
+  }
+  function four() {
+  submit(4)
+  }
+  function five() {
+  submit(5)
+  }
