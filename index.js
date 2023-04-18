@@ -37,12 +37,11 @@ app.get('/', (req, res) => {
             })
             i++
         }
+        connection.query('SELECT HealthSections.Name, SectionUserLink.ID FROM HealthSections, SectionUserLink WHERE SectionUserLink.UserID = ? AND HealthSections.SectionID = SectionUserLink.SectionID;', [req.session.UserID], function (err, result, fields) {
+            if (err) {throw err};
+            res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {sections: result, firstname: req.session.Firstname}))
+        })
     })
-    connection.query('SELECT HealthSections.Name, SectionUserLink.ID FROM HealthSections, SectionUserLink WHERE SectionUserLink.UserID = ? AND HealthSections.SectionID = SectionUserLink.SectionID;', [req.session.UserID], function (err, result, fields) {
-        if (err) {throw err};
-        res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {sections: result}))
-    })
-    
 });
 app.get('/images/patientMonitoringlogo.jpg', (req, res) => {
     res.sendFile(__dirname + "/src/images/patientMonitoringLogo.jpg");
@@ -178,6 +177,13 @@ app.get('/Activities/:SectionID/SensoryData/Reminders/:RecordID/Edit', (req, res
         if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/Reminders`); return;}
         res.send(pug.renderFile(__dirname + "/src/templates/reminderEdit.pug", {results: results[0]}));
     })
+})
+app.get('/Activities/:SectionID/MentalData', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const date = new Date();
+
+
 })
 
 // POST REQUESTS
