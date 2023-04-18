@@ -59,27 +59,21 @@ CREATE TABLE Reminders (
     PRIMARY KEY (ReminderID),
     FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
-CREATE TABLE MentalData (
-    RecordID INT NOT NULL AUTO_INCREMENT,
-    ID int,
-    PRIMARY KEY (RecordID),
-    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
-);
 CREATE TABLE MentalNotes (
     NoteID INT NOT NULL AUTO_INCREMENT,
-    RecordID int,
+    ID int,
     Notes varchar(255),
     date DATE,
     PRIMARY KEY (NoteID),
-    FOREIGN KEY (RecordID) REFERENCES MentalData(RecordID) ON DELETE CASCADE
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
 CREATE TABLE MentalCheckIn (
     CheckInID INT NOT NULL AUTO_INCREMENT,
-    RecordID int,
+    ID int,
     MoodScore int,
     date DATE,
     PRIMARY KEY (CheckInID),
-    FOREIGN KEY (RecordID) REFERENCES MentalData(RecordID) ON DELETE CASCADE
+    FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE
 );
 CREATE TABLE Locations (
     ID INT NOT NULL AUTO_INCREMENT,

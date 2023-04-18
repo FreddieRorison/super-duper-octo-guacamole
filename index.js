@@ -24,11 +24,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // GET REQUESTS
 // To be changed
 app.get('/', (req, res) => {
-    if (Authed(req)) {
-        connection.query('SELECT SectionID, Name FROM healthsections;', function (err, results, fields) {
-            res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {firstname: req.session.Firstname, sections: results}))
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    connection.query('SELECT SectionID FROM healthsections;', function (err, results, fields) {
+        var i = 0;
+        while (i < results.length) {
+            connection.query('SELECT ID FROM SectionUserLink WHERE SectionID = ? AND UserID = ?', [results[0].SectionID, req.session.UserID], function (err, result) {
+                if (result.length < 1) {
+                    connection.query('INSERT INTO SectionUserLink (SectionID, UserID) VALUES (?,?)', [results[0].SectionID, req.session.UserID], function (err, resul) {
+                        if (err) throw (err);
+                    })
+                }
+            })
+            i++
+        }
+        connection.query('SELECT HealthSections.Name, SectionUserLink.ID FROM HealthSections, SectionUserLink WHERE SectionUserLink.UserID = ? AND HealthSections.SectionID = SectionUserLink.SectionID;', [req.session.UserID], function (err, result, fields) {
+            if (err) {throw err};
+            res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {sections: result, firstname: req.session.Firstname}))
         })
-    } else {res.redirect('/login')};
+    })
 });
 app.get('/images/patientMonitoringlogo.jpg', (req, res) => {
     res.sendFile(__dirname + "/src/images/patientMonitoringLogo.jpg");
@@ -42,31 +55,34 @@ app.get('/register', (req, res) => {
 app.get('/Activities/:SectionID', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
-    connection.query('SELECT Name, SensoryData, MentalData, DiseaseData FROM healthsections WHERE SectionID = ?', [SectionID], function (err, result, fields) {
-        if (result.length <= 0) {res.redirect('/'); return;}
-        var activities = []
-        var iterator = 0;
-        if (result[0].SensoryData == 1) {
-            activities[iterator] = {Name: 'Sensory Data', Link: 'SensoryData'}
-            iterator = iterator + 1;
-        } 
-        if (result[0].MentalData == 1) {
-            activities[iterator] = {Name: 'Mental Health Data', Link: 'MentalData'}
-            iterator = iterator + 1;
-        } 
-        if (result[0].DiseaseData == 1) {
-            activities[iterator] = {Name: 'Disease Data', Link: 'DiseaseData'}
-            iterator = iterator + 1;
-        }
-
-        res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
-        })
+    connection.query('SELECT SectionID FROM SectionUserLink WHERE ID = ?', [SectionID], function (err, result) {
+        connection.query('SELECT Name, SensoryData, MentalData, DiseaseData FROM healthsections WHERE SectionID = ?', [result[0].SectionID], function (err, result, fields) {
+            if (result.length <= 0) {res.redirect('/'); return;}
+            var activities = []
+            var iterator = 0;
+            if (result[0].SensoryData == 1) {
+                activities[iterator] = {Name: 'Sensory Data', Link: 'SensoryData'}
+                iterator = iterator + 1;
+            } 
+            if (result[0].MentalData == 1) {
+                activities[iterator] = {Name: 'Mental Health Data', Link: 'MentalData'}
+                iterator = iterator + 1;
+            } 
+            if (result[0].DiseaseData == 1) {
+                activities[iterator] = {Name: 'Disease Data', Link: 'DiseaseData'}
+                iterator = iterator + 1;
+            }
+    
+            res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
+            })
+    })
+    
     
 })
 app.get('/Activities/:SectionID/SensoryData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
-    connection.query('SELECT Name, Date, Repeatit, Period FROM Reminders WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
+    connection.query('SELECT Name, Date, Repeatit, Period FROM Reminders WHERE ID = ?', [SectionID], function (err, results, fields) {
         const date = new Date();
         var reminders = []
         var i = 0;
@@ -83,6 +99,7 @@ app.get('/Activities/:SectionID/SensoryData', (req, res) => {
                 reminders[iterator] = {Name: results[i].Name}
                 iterator++
             }
+
             i++
         }
         res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders}));
@@ -92,7 +109,7 @@ app.get('/Activities/:SectionID/SensoryData/HealthData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    connection.query('SELECT RecordID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
+    connection.query('SELECT RecordID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE ID = ?', [SectionID], function (err, results, fields) {
         res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
     })
 })
@@ -116,7 +133,7 @@ app.get('/Activities/:SectionID/SensoryData/ExerciseData', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    connection.query('SELECT RecordID, Duration, Note, Date FROM exercisedata WHERE SectionID = ? AND UserID = ? ORDER BY date DESC;', [SectionID, req.session.UserID], function (err, results, fields) {
+    connection.query('SELECT RecordID, Duration, Note, Date FROM exercisedata WHERE ID = ? ORDER BY date DESC;', [SectionID], function (err, results, fields) {
         res.send(pug.renderFile(__dirname + "/src/templates/exercisedata.pug", {results: results}))
     })
 })
@@ -140,7 +157,7 @@ app.get('/Activities/:SectionID/SensoryData/Reminders', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    connection.query('SELECT ReminderID, Name, Date, Repeatit, Period FROM reminders WHERE SectionID = ? AND UserID = ?', [SectionID, req.session.UserID], function (err, results, fields) {
+    connection.query('SELECT ReminderID, Name, Date, Repeatit, Period FROM reminders WHERE ID = ?', [SectionID], function (err, results, fields) {
         if (err) { throw err;}
         res.send(pug.renderFile(__dirname + "/src/templates/reminders.pug", {results: results}))
     })
@@ -160,6 +177,13 @@ app.get('/Activities/:SectionID/SensoryData/Reminders/:RecordID/Edit', (req, res
         if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/Reminders`); return;}
         res.send(pug.renderFile(__dirname + "/src/templates/reminderEdit.pug", {results: results[0]}));
     })
+})
+app.get('/Activities/:SectionID/MentalData', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const SectionID = req.params.SectionID;
+    const date = new Date();
+
+
 })
 
 // POST REQUESTS
@@ -202,7 +226,7 @@ app.post('/Activities/:SectionID/SensoryData/HealthData/Remove', (req, res) => {
     const SectionID = req.params.SectionID;
     const RecordID = req.body.RecordID;
 
-    connection.query('DELETE FROM healthdata WHERE SectionID = ? AND UserID = ? AND RecordID = ?;', [SectionID, req.session.UserID, RecordID], function (err, results, fields) {
+    connection.query('DELETE FROM healthdata WHERE ID = ? AND RecordID = ?;', [SectionID, RecordID], function (err, results, fields) {
         res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
     })
 })
@@ -215,7 +239,7 @@ app.post('/Activities/:SectionID/SensoryData/HealthData/Add', (req, res) => {
     const ResperationRate = req.body.ResperationRate;
     const ECG = req.body.ECG;
 
-    connection.query('INSERT INTO HealthData (UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG) VALUES (?,?,?,?,?,?,?);', [req.session.UserID, SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG], function (err, results, fields) {
+    connection.query('INSERT INTO HealthData (ID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG) VALUES (?,?,?,?,?,?);', [SectionID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG], function (err, results, fields) {
         res.redirect(`/Activities/${SectionID}/SensoryData/HealthData`);
     })
 })
@@ -250,7 +274,7 @@ app.post('/Activities/:SectionID/SensoryData/ExerciseData/Add', (req, res) => {
     const Notes = req.body.Notes;
     const Date = req.body.Date;
 
-    connection.query('INSERT INTO ExerciseData (USerID, SectionID, Duration, Note, Date) VALUES (?,?,?,?,?);', [req.session.UserID, SectionID, Duration, Notes, Date], function (err, results, fields) {
+    connection.query('INSERT INTO ExerciseData (ID, Duration, Note, Date) VALUES (?,?,?,?);', [SectionID, Duration, Notes, Date], function (err, results, fields) {
         res.redirect(`/Activities/${SectionID}/SensoryData/ExerciseData`);
     })
 })
@@ -277,7 +301,7 @@ app.post('/Activities/:SectionID/SensoryData/Reminders/Add', (req, res) => {
     const Period = req.body.Period;
     if (req.body.Repeats == 'on') {repeats = true;}
     
-    connection.query('INSERT INTO reminders (UserID, SectionID, Name, Date, repeatit, Period) VALUES (?,?,?,?,?,?);', [req.session.UserID, SectionID, Name, Date, repeats, Period], function (err, results, fields) {
+    connection.query('INSERT INTO reminders (ID, Name, Date, repeatit, Period) VALUES (?,?,?,?,?);', [SectionID, Name, Date, repeats, Period], function (err, results, fields) {
         res.redirect(`/Activities/${SectionID}/SensoryData/Reminders`);
     })
 })
@@ -286,7 +310,7 @@ app.post('/Activities/:SectionID/SensoryData/Reminders/Remove', (req, res) => {
     const SectionID = req.params.SectionID;
     const ReminderID = req.body.RecordID;
 
-    connection.query('DELETE FROM reminders WHERE SectionID = ? AND UserID = ? AND ReminderID = ?;', [SectionID, req.session.UserID, ReminderID], function (err, results, fields) {
+    connection.query('DELETE FROM reminders WHERE ID = ? AND ReminderID = ?;', [SectionID, ReminderID], function (err, results, fields) {
         res.sendStatus(200)
     })
 })
