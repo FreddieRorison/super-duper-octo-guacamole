@@ -15,7 +15,7 @@ head
   h1 Exercise Data
   h2 Add Record
   form(method='POST')
-    input(type='text' placeholder='Duration' name='Duration')
-    input(type='text' placeholder='Notes' name='Notes')
+    input(type='text' placeholder='Duration' name='Duration' pattern="^[0-9]+$")
+    input(type='text' placeholder='Notes' name='Notes' maxlength="255")
     input(type='date' name='Date')
     button(type='submit') Submit

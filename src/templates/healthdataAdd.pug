@@ -15,9 +15,9 @@ head
   h1 Health Data
   h2 Add Record
   form(method='POST')
-    input(type='text' placeholder='Body Temperature' name='BodyTemp')
-    input(type='text' placeholder='Pulse Rate' name='PulseRate')
-    input(type='text' placeholder='Blood Pressure' name='BloodPressure')
-    input(type='text' placeholder='Resperation Rate' name='ResperationRate')
-    input(type='text' placeholder='ECG' name='ECG')
+    input(type='text' placeholder='Body Temperature' name='BodyTemp' pattern="^[0-9]+$")
+    input(type='text' placeholder='Pulse Rate' name='PulseRate' pattern="^[0-9]+$")
+    input(type='text' placeholder='Blood Pressure' name='BloodPressure' pattern="^[0-9]+$")
+    input(type='text' placeholder='Resperation Rate' name='ResperationRate' pattern="^[0-9]+$")
+    input(type='text' placeholder='ECG' name='ECG' pattern="^[0-9]+$")
     button(type='submit') Submit
