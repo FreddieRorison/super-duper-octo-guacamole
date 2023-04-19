@@ -214,11 +214,21 @@ body {
     width: 25%;
 }
 #homepage button {
-    width: 6rem;
-    height: 6rem;
+    width: 5rem;
+    height: 5rem;
     font-size: 3rem;
     display: inline-block;
-    margin: 2.5rem 0 0 1.75rem;
+    margin: 2.5rem 0rem 0 1.75rem;
+    border-radius:100px;
+    cursor: pointer;
+    border:none;
+}
+#homepage button:hover{
+    width: 5.5rem;
+    height:5.5rem;
+    font-size: 3.5rem;
+    box-shadow:5px 5px 20px #aeaeae;
+    transition-duration: 0.5s;
 }
 #homepage h2 {
     margin-left: 1.5em;
