@@ -14,11 +14,11 @@ head
 #activityAdd.contentContainer
   h1 Add Reminder
   form(method='POST')
-    input(type='text' placeholder='Name' name='Name')
+    input(type='text' placeholder='Name' name='Name' pattern="^[a-zA-Z]+$")
     label(for="Date") Reminder Date 
     input(type='date' name='Date')
     label(for="Repeats") Repeat reminder?
     input(type='checkbox' placeholder='Repeats?' name='Repeats')
     label(for="Period") How often in days (Optional)
-    input(type='text' placeholder='Period' name='Period')
+    input(type='text' placeholder='Period' name='Period' pattern="^[0-9]+$")
     button(type='submit') Submit
