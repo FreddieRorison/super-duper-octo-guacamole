@@ -10,8 +10,9 @@ head
   ul
     li
       a(href='home.html') Home
-    li
-      a(href='HealthActivitiesMenu.html') Settings
+    if (admin == 1)
+      li
+        a(href='/AdminPanel') Admin Panel
 #homepage.contentContainer
   h1 Mental Health Tracker
   h2 How are you feeling today?

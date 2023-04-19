@@ -9,8 +9,9 @@ head
   ul
     li
       a(href='/') Home
-    li
-      a(href='') Settings
+    if (admin == 1)
+      li
+        a(href='/AdminPanel') Admin Panel
 #activityAdd.contentContainer
   h1 Mnetal Notes
   h2 Add Note

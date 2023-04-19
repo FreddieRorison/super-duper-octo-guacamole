@@ -9,8 +9,9 @@ head
   ul
     li
       a(href='/') Home
-    li
-      a(href='') Settings
+    if (admin == 1)
+      li
+        a(href='/AdminPanel') Admin Panel
 #HealthActivity.contentContainer
   h1 Exercise Data
   #graphContainer

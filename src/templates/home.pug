@@ -9,8 +9,9 @@ head
   ul
     li
       a(href='/') Home
-    li
-      a(href='/settings') Settings
+    if (admin == 1)
+      li
+        a(href='/AdminPanel') Admin Panel
 #homepage.contentContainer
   h1 Welcome back, #{firstname}
   each section in sections

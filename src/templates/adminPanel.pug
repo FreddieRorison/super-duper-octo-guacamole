@@ -1,5 +1,5 @@
 head
-  title Medical App
+  title Admin Panel
   style 
     include ../stylesheets/styles.css
   meta(charset='utf-8')
@@ -13,14 +13,14 @@ head
       li
         a(href='/AdminPanel') Admin Panel
 #HealthActivity.contentContainer
-  h1 Mental Notes and Tracking
-  #graphContainer
-    canvas#graphBox
+  h1 Admin Panel
   table
     tr
       td ID
-      td Note
-      td Date
+      td Name
+      td SensoryData
+      td mentalData
+      td DiseaseData
     each result in results
         tr
         each line in result
@@ -32,28 +32,6 @@ head
     button(onclick='Edit()') Edit
   script(src="https://cdn.jsdelivr.net/npm/chart.js")
 
-  script. 
-    const ctx = document.getElementById('graphBox');
-
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-
   script.
     function Remove() {
       let id = prompt("Please enter the Record ID you would like to remove");
@@ -62,14 +40,14 @@ head
       } else {
         var data = {RecordID: id};
         var http = new XMLHttpRequest();
-        http.open("POST", window.location.href + '/Remove', true);
+        http.open("POST", window.location.href + '/RemoveSection', true);
         http.setRequestHeader("Content-Type", "application/json");
         http.send(JSON.stringify(data));
       }
     }
     function Add() {
         var url = window.location.href;
-        window.location.href = url + '/Add';
+        window.location.href = url + '/AddSection';
     }
     function Edit() {
         let id = prompt("Please enter the Record ID you would like to edit");
@@ -77,6 +55,6 @@ head
         alert("Removal Cancelled");
       } else {
         var url = window.location.href;
-        window.location.href = url + '/'+id+'/Edit'
+        window.location.href = url + '/EditSection/'+id;
       }
     }

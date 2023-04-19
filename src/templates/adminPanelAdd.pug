@@ -13,10 +13,14 @@ head
       li
         a(href='/AdminPanel') Admin Panel
 #activityAdd.contentContainer
-  h1 Exercise Data
-  h2 Add Record
+  h1 Admin Panel
+  h2 Add Section
   form(method='POST')
-    input(type='text' placeholder='Duration' name='Duration' pattern="^[0-9]+$")
-    input(type='text' placeholder='Notes' name='Notes' maxlength="255")
-    input(type='date' name='Date')
+    input(type='text-area' placeholder='Name' name='Name')
+    label(for="SensoryData") Sensory Data
+    input(type='checkbox' name='SensoryData')
+    label(for="MentalData") Mental Data
+    input(type='checkbox' name='MentalData')
+    label(for="DiseaseData") Disease Data
+    input(type='checkbox' name='DiseaseData')
     button(type='submit') Submit

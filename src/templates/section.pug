@@ -10,8 +10,9 @@ head
   ul
     li
       a(href='/') Home
-    li
-      a(href='/settings') Settings
+    if (admin == 1)
+      li
+        a(href='/AdminPanel') Admin Panel
 #HealthActivitiesMenu.contentContainer
   h1 #{SectionName}
   each activity in activities

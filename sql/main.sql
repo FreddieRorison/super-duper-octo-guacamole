@@ -90,3 +90,23 @@ CREATE TABLE LocationCheckIn (
     FOREIGN KEY (ID) REFERENCES SectionUserLink(ID) ON DELETE CASCADE,
     FOREIGN KEY (Location) REFERENCES Locations(ID) ON DELETE CASCADE
 );
+
+INSERT INTO Users (UserID, Firstname, Surname, Email, Password, Admin) VALUES (1, 'Freddie', 'Rorison', 'freddieror@gmail.com', 'Password1', 1);
+INSERT INTO Users (UserID, Firstname, Surname, Email, Password, Admin) VALUES (2,'Papa', 'John', 'papajohn@aol.com', 'EzPeasy2Pasta988', 0);
+INSERT INTO Users (UserID, Firstname, Surname, Email, Password, Admin) VALUES (3,'Julius', 'Oppenheimer', 'atom@pentagon.com', 'BecomeDeath985', 0);
+
+INSERT INTO HealthSections (SectionID, Name, SensoryData, MentalData, DiseaseData) VALUES (1, 'Everything Section', 1,1,1);
+INSERT INTO HealthSections (SectionID, Name, SensoryData, MentalData, DiseaseData) VALUES (2, 'Partial Section', 1,0,1);
+INSERT INTO HealthSections (SectionID, Name, SensoryData, MentalData, DiseaseData) VALUES (3, 'Scarce Section', 0,1,0);
+
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (1,1);
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (2,1);
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (3,1);
+
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (1,2);
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (2,2);
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (3,2);
+
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (1,3);
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (2,3);
+INSERT INTO SectionUserLink (SectionID, UserID) VALUES (3,3);

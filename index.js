@@ -28,9 +28,10 @@ app.get('/', (req, res) => {
     connection.query('SELECT SectionID FROM healthsections;', function (err, results, fields) {
         var i = 0;
         while (i < results.length) {
-            connection.query('SELECT ID FROM SectionUserLink WHERE SectionID = ? AND UserID = ?', [results[0].SectionID, req.session.UserID], function (err, result) {
+            var line = results[i];
+            connection.query('SELECT ID FROM SectionUserLink WHERE SectionID = ? AND UserID = ?', [line.SectionID, req.session.UserID], function (err, result) {
                 if (result.length < 1) {
-                    connection.query('INSERT INTO SectionUserLink (SectionID, UserID) VALUES (?,?)', [results[0].SectionID, req.session.UserID], function (err, resul) {
+                    connection.query('INSERT INTO SectionUserLink (SectionID, UserID) VALUES (?,?)', [line.SectionID, req.session.UserID], function (err, resul) {
                         if (err) throw (err);
                     })
                 }
@@ -38,8 +39,8 @@ app.get('/', (req, res) => {
             i++
         }
         connection.query('SELECT HealthSections.Name, SectionUserLink.ID FROM HealthSections, SectionUserLink WHERE SectionUserLink.UserID = ? AND HealthSections.SectionID = SectionUserLink.SectionID;', [req.session.UserID], function (err, result, fields) {
-            if (err) {throw err};
-            res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {sections: result, firstname: req.session.Firstname}))
+                if (err) {throw err};
+            res.send(pug.renderFile(__dirname + "/src/templates/home.pug", {sections: result, firstname: req.session.Firstname, admin: req.session.Admin}))
         })
     })
 });
@@ -73,7 +74,7 @@ app.get('/Activities/:SectionID', (req, res) => {
                 iterator = iterator + 1;
             }
     
-            res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name}))
+            res.send(pug.renderFile(__dirname + '/src/templates/section.pug', {SectionID: SectionID, activities: activities, SectionName: result[0].Name, admin: req.session.Admin}))
             })
     })
     
@@ -101,7 +102,7 @@ app.get('/Activities/:SectionID/SensoryData', (req, res) => {
             }
             i++
         }
-        res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders}));
+        res.send(pug.renderFile(__dirname + '/src/templates/sensorydata.pug', {SectionID: SectionID, RemindersToday: reminders, admin: req.session.Admin}));
     })
 })
 app.get('/Activities/:SectionID/SensoryData/HealthData', (req, res) => {
@@ -109,14 +110,14 @@ app.get('/Activities/:SectionID/SensoryData/HealthData', (req, res) => {
     const SectionID = req.params.SectionID;
 
     connection.query('SELECT RecordID, BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE ID = ?', [SectionID], function (err, results, fields) {
-        res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results}))
+        res.send(pug.renderFile(__dirname + "/src/templates/healthdata.pug", {results: results, admin: req.session.Admin}))
     })
 })
 app.get('/Activities/:SectionID/SensoryData/HealthData/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    res.send(pug.renderFile(__dirname + "/src/templates/healthdataAdd.pug"));
+    res.send(pug.renderFile(__dirname + "/src/templates/healthdataAdd.pug", {admin: req.session.Admin}));
 })
 app.get('/Activities/:SectionID/SensoryData/HealthData/:RecordID/Edit', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
@@ -125,7 +126,7 @@ app.get('/Activities/:SectionID/SensoryData/HealthData/:RecordID/Edit', (req, re
 
     connection.query('SELECT BodyTemp, PulseRate, BloodPressure, ResperationRate, ECG FROM healthdata WHERE RecordID = ?;', [RecordID], function (err, results, fields) {
         if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/HealthData`); return;}
-        res.send(pug.renderFile(__dirname + "/src/templates/healthdataEdit.pug", {results: results[0]}));
+        res.send(pug.renderFile(__dirname + "/src/templates/healthdataEdit.pug", {results: results[0], admin: req.session.Admin}));
     })
 })
 app.get('/Activities/:SectionID/SensoryData/ExerciseData', (req, res) => {
@@ -133,14 +134,14 @@ app.get('/Activities/:SectionID/SensoryData/ExerciseData', (req, res) => {
     const SectionID = req.params.SectionID;
 
     connection.query('SELECT RecordID, Duration, Note, Date FROM exercisedata WHERE ID = ? ORDER BY date DESC;', [SectionID], function (err, results, fields) {
-        res.send(pug.renderFile(__dirname + "/src/templates/exercisedata.pug", {results: results}))
+        res.send(pug.renderFile(__dirname + "/src/templates/exercisedata.pug", {results: results, admin: req.session.Admin}))
     })
 })
 app.get('/Activities/:SectionID/SensoryData/ExerciseData/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    res.send(pug.renderFile(__dirname + "/src/templates/exercisedataAdd.pug"));
+    res.send(pug.renderFile(__dirname + "/src/templates/exercisedataAdd.pug", {admin: req.session.Admin}));
 })
 app.get('/Activities/:SectionID/SensoryData/ExerciseData/:RecordID/Edit', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
@@ -149,7 +150,7 @@ app.get('/Activities/:SectionID/SensoryData/ExerciseData/:RecordID/Edit', (req, 
 
     connection.query('SELECT duration, note, date FROM ExerciseData WHERE RecordID = ?;', [RecordID], function (err, results, fields) {
         if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/ExerciseData`); return;}
-        res.send(pug.renderFile(__dirname + "/src/templates/exercisedataEdit.pug", {results: results[0]}));
+        res.send(pug.renderFile(__dirname + "/src/templates/exercisedataEdit.pug", {results: results[0], admin: req.session.Admin}));
     })
 })
 app.get('/Activities/:SectionID/SensoryData/Reminders', (req, res) => {
@@ -158,14 +159,14 @@ app.get('/Activities/:SectionID/SensoryData/Reminders', (req, res) => {
 
     connection.query('SELECT ReminderID, Name, Date, Repeatit, Period FROM reminders WHERE ID = ?', [SectionID], function (err, results, fields) {
         if (err) { throw err;}
-        res.send(pug.renderFile(__dirname + "/src/templates/reminders.pug", {results: results}))
+        res.send(pug.renderFile(__dirname + "/src/templates/reminders.pug", {results: results, admin: req.session.Admin}))
     })
 })
 app.get('/Activities/:SectionID/SensoryData/Reminders/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
 
-    res.send(pug.renderFile(__dirname + "/src/templates/reminderAdd.pug"));
+    res.send(pug.renderFile(__dirname + "/src/templates/reminderAdd.pug", {admin: req.session.Admin}));
 })
 app.get('/Activities/:SectionID/SensoryData/Reminders/:RecordID/Edit', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
@@ -174,7 +175,7 @@ app.get('/Activities/:SectionID/SensoryData/Reminders/:RecordID/Edit', (req, res
 
     connection.query('SELECT Name, Date, Repeatit, Period FROM reminders WHERE ReminderID = ?;', [RecordID], function (err, results, fields) {
         if (results[0] == null) {res.redirect(`/Activities/${SectionID}/SensoryData/Reminders`); return;}
-        res.send(pug.renderFile(__dirname + "/src/templates/reminderEdit.pug", {results: results[0]}));
+        res.send(pug.renderFile(__dirname + "/src/templates/reminderEdit.pug", {results: results[0], admin: req.session.Admin}));
     })
 })
 app.get('/Activities/:SectionID/MentalData', (req, res) => {
@@ -190,7 +191,7 @@ app.get('/Activities/:SectionID/MentalData', (req, res) => {
         var d2 = testDate.getDate() + '-' + testDate.getMonth() + '-' + testDate.getFullYear();
         if (d1 != d2) {res.send(pug.renderFile(__dirname + "/src/templates/mentalCheckIn.pug")); return;}
         connection.query('SELECT NoteID, Notes, Date FROM MentalNotes WHERE ID = ?', [SectionID], function (err, results, fields) {
-            res.send(pug.renderFile(__dirname + "/src/templates/mentalData.pug", {results: results}));
+            res.send(pug.renderFile(__dirname + "/src/templates/mentalData.pug", {results: results, admin: req.session.Admin}));
         })
     })
     
@@ -199,7 +200,7 @@ app.get('/Activities/:SectionID/MentalData/Add', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
     const SectionID = req.params.SectionID;
     
-    res.send(pug.renderFile(__dirname + "/src/templates/mentalNotesAdd.pug"));
+    res.send(pug.renderFile(__dirname + "/src/templates/mentalNotesAdd.pug", {admin: req.session.Admin}));
 })
 app.get('/Activities/:SectionID/MentalData/:RecordID/Edit', (req, res) => {
     if (!Authed(req)) {res.redirect('/login'); return;}
@@ -208,7 +209,30 @@ app.get('/Activities/:SectionID/MentalData/:RecordID/Edit', (req, res) => {
     
     connection.query('SELECT Notes FROM MentalNotes WHERE NoteID = ?;', [RecordID], function (err, results, fields) {
         if (results[0] == null) {res.redirect(`/Activities/${SectionID}/MentalData`); return;}
-        res.send(pug.renderFile(__dirname + "/src/templates/mentalNotesEdit.pug", {results: results[0]}));
+        res.send(pug.renderFile(__dirname + "/src/templates/mentalNotesEdit.pug", {results: results[0], admin: req.session.Admin}));
+    })
+})
+app.get('/AdminPanel', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    if (req.session.Admin == 0) {res.redirect('/'); return;}
+    
+    connection.query('SELECT SectionID, Name, SensoryData, MentalData, DiseaseData FROM HealthSections;', function (err, results, fields) {
+        res.send(pug.renderFile(__dirname + "/src/templates/adminPanel.pug", {results: results, admin: req.session.Admin}));
+    })
+})
+app.get('/AdminPanel/AddSection', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    if (req.session.Admin == 0) {res.redirect('/'); return;}
+    res.send(pug.renderFile(__dirname + "/src/templates/adminPanelAdd.pug", {admin: req.session.Admin}));
+})
+app.get('/AdminPanel/EditSection/:RecordID', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    if (req.session.Admin == 0) {res.redirect('/'); return;}
+    const RecordID = req.params.RecordID;
+
+    connection.query('SELECT Name, SensoryData, MentalData, DiseaseData FROM healthsections WHERE SectionID = ?;', [RecordID], function (err, results, fields) {
+        if (results[0] == null) {res.redirect(`/AdminPanel`); return;}
+        res.send(pug.renderFile(__dirname + "/src/templates/adminPanelEdit.pug", {results: results[0], admin: req.session.Admin}));
     })
 })
 
@@ -395,6 +419,59 @@ app.post('/Activities/:SectionID/MentalData/:RecordID/Edit', (req, res) => {
         res.redirect(`/Activities/${SectionID}/MentalData`);
     })
 
+})
+app.post('/AdminPanel/AddSection', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    if (req.session.Admin == 0) {res.redirect('/'); return;}
+    const Name = req.body.Name;
+    var Sensory = false;
+    var Mental = false;
+    var Disease = false;
+    if (req.body.SensoryData == 'on') {
+        Sensory = true;
+    }
+    if (req.body.MentalData == 'on') {
+        Mental = true;
+    }
+    if (req.body.DiseaseData == 'on') {
+        Disease = true;
+    }
+
+    connection.query('INSERT INTO HealthSections (Name, SensoryData, MentalData, DiseaseData) VALUES (?,?,?,?);', [Name, Sensory, Mental, Disease], function (err, result, fields) {if(err){throw err;}});
+
+    res.redirect(`/AdminPanel`);
+})
+app.post('/AdminPanel/EditSection/:RecordID', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    if (req.session.Admin == 0) {res.redirect('/'); return;}
+    const RecordID = req.params.RecordID;
+    const Name = req.body.Name;
+    var Sensory = false;
+    var Mental = false;
+    var Disease = false;
+    if (req.body.SensoryData == 'on') {
+        Sensory = true;
+    }
+    if (req.body.MentalData == 'on') {
+        Mental = true;
+    }
+    if (req.body.DiseaseData == 'on') {
+        Disease = true;
+    }
+    
+    connection.query('UPDATE HealthSections SET Name = ?, SensoryData = ?, MentalData = ?, DiseaseData = ? WHERE SectionID = ?;', [Name, Sensory, Mental, Disease, RecordID], function (err, results, fields ) {
+        if (err) {throw err};
+        res.redirect(`/AdminPanel`);
+    })
+
+})
+app.post('/AdminPanel/RemoveSection', (req, res) => {
+    if (!Authed(req)) {res.redirect('/login'); return;}
+    const RecordID = req.body.RecordID;
+
+    connection.query('DELETE FROM healthsections WHERE SectionID = ?;', [RecordID], function (err, results, fields) {
+        res.sendStatus(200)
+    })
 })
 
 
