@@ -14,6 +14,7 @@ head
 #HealthActivity.contentContainer
   h1 Exercise Data
   #graphContainer
+    canvas#graphBox
   table
     tr
       td ID
@@ -29,6 +30,31 @@ head
     button(onclick='Add()') Add
     button(onclick='Remove()') Remove
     button(onclick='Edit()') Edit
+
+  script(src="https://cdn.jsdelivr.net/npm/chart.js")
+
+  script. 
+    const ctx = document.getElementById('graphBox');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Minutes of Exercise',
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
 
   script.
     function Remove() {
