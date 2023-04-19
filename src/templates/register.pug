@@ -13,8 +13,8 @@ head
   form(action='/register' method='POST')
     input(type='text' placeholder='Firstname' name='firstname' value='Freddie')
     input(type='text' placeholder='Surname' name='surname' value='Rorison')
-    input(type='text' placeholder='Email' name='email' value='test@test.com')
-    input(type='password' placeholder='Password' name='password' value='TestPass')
+    input(type='text' placeholder='Email' name='email' value='test@test.com' pattern="^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$")
+    input(type='password' placeholder='Password' name='password' value='TestPass' pattern='^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$')
     input(type='password' placeholder='Confirm Password')
     button(type='submit') Submit
 script(type='text/javascript').
