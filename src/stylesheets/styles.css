@@ -22,7 +22,7 @@ body {
 
 /* Topbar CSS */
 .topbar {
-    height: 8vh;
+    height: 4em;
     width: 100%;
     margin: 0;
     position: sticky;
